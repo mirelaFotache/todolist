@@ -123,7 +123,7 @@ public class UserControllerTest {
 
     @Test
     public void updateUser() {
-        UserDto userToBePersisted = UserSupplier.supplyUserDto3ForInsert();
+        UserDto userToBePersisted = UserSupplier.supplyUserDtoForUpdate();
         ResponseEntity<UserDto> userToBeUpdated =
                 restTemplate.postForEntity("http://localhost:" + port + "/todolist/users", userToBePersisted, UserDto.class);
         HttpHeaders requestHeaders = new HttpHeaders();

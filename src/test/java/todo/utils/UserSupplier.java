@@ -27,7 +27,7 @@ public class UserSupplier {
         return user;
     }
 
-    public static UserDto supplyUserDto3ForInsert() {
+    public static UserDto supplyUserDtoForUpdate() {
         UserDto user = new UserDto();
         user.setAlias("mari");
         user.setFirstName("Enescu");
