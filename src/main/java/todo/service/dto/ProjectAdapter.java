@@ -29,7 +29,7 @@ public class ProjectAdapter {
 
     public static Set<ProjectDto> toDtoSet(Set<Project> projects) {
         Set<ProjectDto> projectsDto = new HashSet<>();
-        if (!projects.isEmpty()) {
+        if (projects!=null && !projects.isEmpty()) {
             for (Project o : projects) {
                 projectsDto.add(toDto(o));
             }

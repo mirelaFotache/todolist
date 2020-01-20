@@ -12,7 +12,8 @@ public class UserAdapter {
     public static UserDto toDto(User user) {
         UserDto dto = new UserDto();
         if (user != null) {
-            dto.setId(user.getId().toString());
+            if (user.getId() != null)
+                dto.setId(user.getId().toString());
             dto.setFirstName(user.getFirstName());
             dto.setLastName(user.getLastname());
             dto.setAlias(user.getAlias());
@@ -31,6 +32,7 @@ public class UserAdapter {
         }
         return user;
     }
+
     public static void fromDtoToUser(UserDto dto, User user) {
         if (dto != null) {
             user.setFirstName(dto.getFirstName());

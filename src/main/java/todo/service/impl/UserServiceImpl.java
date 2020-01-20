@@ -25,6 +25,11 @@ public class UserServiceImpl implements UserService {
 
     public static final String USERDTO_ID_INVALID = "userdto.id.invalid";
     public static final String USERDTO_DUPLICATE_ALIAS = "userdto.duplicate.alias";
+
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
+
     private UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
@@ -45,7 +50,7 @@ public class UserServiceImpl implements UserService {
     public Page<UserDto> getAllUsers() {
         List<User> users = StreamSupport.stream(userRepository.findAll().spliterator(), false).collect(Collectors.toList());
         List<UserDto> collect = users.stream().map(UserAdapter::toDto).collect(Collectors.toList());
-        return new PageImpl<>(collect, PageRequest.of(0, 20, Sort.by("name")), collect.size());
+        return new PageImpl<>(collect, PageRequest.of(0, 20, Sort.by("alias")), collect.size());
     }
 
     @Override
@@ -65,12 +70,17 @@ public class UserServiceImpl implements UserService {
         if (id != null) {
             Optional<User> userOptional = userRepository.findById(UUID.fromString(id));
             if (userOptional.isPresent()) {
-                String isNotValidMsg = isValidUser(userDto.getAlias());
-                if (isNotValidMsg.isEmpty()) {
+                if(userDto.getAlias()!=null) {
+                    if (!userDto.getAlias().equals(userOptional.get().getAlias())) {
+                        String isNotValidMsg = isValidUser(userDto.getAlias());
+                        if (isNotValidMsg.isEmpty()) {
+                            throw new InvalidParameterException(isNotValidMsg);
+                        }
+                    }
                     UserAdapter.fromDtoToUser(userDto, userOptional.get());
                     return Optional.of(UserAdapter.toDto(userRepository.save(userOptional.get())));
-                } else {
-                    throw new InvalidParameterException(isNotValidMsg);
+                }else{
+                    throw new InvalidParameterException("userdto.notempty.alias");
                 }
             } else {
                 throw new InvalidParameterException(USERDTO_ID_INVALID);
@@ -82,10 +92,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(String id) {
+    public boolean deleteUser(String id) {
         if (id != null) {
             Optional<User> userOptional = userRepository.findById(UUID.fromString(id));
             userOptional.ifPresent(user -> userRepository.delete(user));
+            return true;
+        } else {
+            return false;
         }
     }
 

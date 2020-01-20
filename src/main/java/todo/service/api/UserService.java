@@ -20,5 +20,5 @@ public interface UserService {
 
     public Optional<UserDto> updateUser(String id, UserDto userDto);
 
-    public void deleteUser(String id);
+    public boolean deleteUser(String id);
 }

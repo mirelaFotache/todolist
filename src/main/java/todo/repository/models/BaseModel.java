@@ -16,7 +16,7 @@ public abstract class BaseModel implements Serializable {
     @Id
     @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
     @GeneratedValue(generator = "uuid-gen")
-    @Type(type = "pg-uuid")
+    @Type(type="uuid-char")
     @Column(name = "id", updatable = false, unique = true)
     private UUID id;
 

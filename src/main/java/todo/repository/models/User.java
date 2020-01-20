@@ -1,7 +1,6 @@
 package todo.repository.models;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -60,12 +59,6 @@ public class User extends BaseModel {
         this.alias = alias;
     }
 
-    public Integer getVersion() {
-        return version;
-    }
 
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
 
 }

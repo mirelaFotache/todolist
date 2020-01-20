@@ -1,0 +1,19 @@
+server:
+    port: 8888
+    servlet:
+      context-path: /todolist
+spring:
+    datasource:
+      url: jdbc:h2:file:~/todolist
+      username: sa
+      password: sa
+      driver-class-name: org.h2.Driver
+logging:
+    level:
+      org:
+        hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
