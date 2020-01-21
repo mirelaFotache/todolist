@@ -64,24 +64,20 @@ public class UserServiceImpl implements UserService {
         final User user = UserAdapter.fromDto(userDto);
         // Find projects that exist in the database and add them to user object. Save() method does persist when project does not have
         // id set and update if an project with id was found in the database
-        if (products != null) {
-            Set<Project> projects= new HashSet<>();
-            products.forEach(project -> {
-                final Project projectByName = projectRepository.getProjectByName(project.getLabel());
-                if (projectByName != null) {
-                    final UUID id = projectByName.getId();
-                    if (id != null) {
-                        projectByName.setLabel(project.getLabel());
-                        projects.add(projectByName);
-                    }
-                }else{
-                    final Project projectNew = new Project();
-                    projectNew.setLabel(project.getLabel());
-                    projects.add(projectNew);
-                }
-            });
+        products.forEach(project -> {
+            Set<Project> projects = new HashSet<>();
+            final Project dbProject = projectRepository.findByLabelEquals(project.getLabel());
+            if (dbProject != null) {
+                dbProject.setLabel(project.getLabel());
+                projects.add(dbProject);
+            } else {
+                final Project projectNew = new Project();
+                projectNew.setLabel(project.getLabel());
+                projects.add(projectNew);
+            }
             user.setProjects(projects);
-        }
+        });
+
         if (isNotValidMsg.isEmpty()) {
             return Optional.of(UserAdapter.toDto(userRepository.save(user)));
         } else {
