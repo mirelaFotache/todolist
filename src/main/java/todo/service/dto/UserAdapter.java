@@ -17,7 +17,13 @@ public class UserAdapter {
             dto.setFirstName(user.getFirstName());
             dto.setLastName(user.getLastname());
             dto.setAlias(user.getAlias());
-            dto.setProjects(ProjectAdapter.toDtoSet(user.getProjects()));
+            dto.setPassword(user.getPassword());
+            dto.setActive(user.getActive());
+            if (user.getProjects() != null)
+                dto.setProjects(ProjectAdapter.toDtoSet(user.getProjects()));
+            if(user.getRoles()!=null){
+                dto.setRoles(RoleAdapter.toDtoSet(user.getRoles()));
+            }
         }
         return dto;
     }
@@ -28,7 +34,11 @@ public class UserAdapter {
             user.setFirstName(dto.getFirstName());
             user.setLastname(dto.getLastName());
             user.setAlias(dto.getAlias());
+            user.setPassword(dto.getPassword());
+            if (dto.getActive() != null)
+                user.setActive(dto.getActive());
             user.setProjects(ProjectAdapter.fromDtoSet(dto.getProjects()));
+            user.setRoles(RoleAdapter.fromDtoSet(dto.getRoles()));
         }
         return user;
     }

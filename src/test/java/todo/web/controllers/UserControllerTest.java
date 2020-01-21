@@ -19,6 +19,7 @@ import todo.repository.ProjectRepository;
 import todo.repository.UserRepository;
 import todo.repository.models.Project;
 import todo.repository.models.User;
+import todo.service.dto.ProjectDto;
 import todo.service.dto.UserDto;
 import todo.utils.RestResponsePage;
 import todo.utils.UserSupplier;
@@ -60,7 +61,6 @@ public class UserControllerTest {
         Set<Project> projects = new HashSet<>();
         Project project = new Project();
         project.setLabel("project");
-        projectRepository.save(project);
         projects.add(project);
         defaultUser.setProjects(projects);
         userRepository.save(defaultUser);
@@ -68,9 +68,7 @@ public class UserControllerTest {
 
     @Test
     public void getUserByAlias() {
-       /* ResponseEntity<String> responseEntity = restTemplate.withBasicAuth("adminUser", "s3cret").getForEntity(
-                "http://localhost:8888/bookstore/users/name?searchBy={name}", String.class, "mira");*/
-        ResponseEntity<UserDto> responseEntity = restTemplate.getForEntity(
+        ResponseEntity<UserDto> responseEntity = restTemplate.withBasicAuth("admin", "admin").getForEntity(
                 "http://localhost:" + port + "/todolist/users/{alias}", UserDto.class, "mifo");
 
         Assert.assertEquals(HttpStatus.OK.value(), responseEntity.getStatusCodeValue());
@@ -78,15 +76,38 @@ public class UserControllerTest {
         Assert.assertNotNull(user);
         Assert.assertEquals("mifo", user.getAlias());
     }
+    @Test
+    public void getUserById() {
+        UserDto userToBePersisted = UserSupplier.supplyUserDtoForInsertWithId();
+        Set<ProjectDto> projects = new HashSet<>();
+        ProjectDto project = new ProjectDto();
+        project.setLabel("project");
+        projects.add(project);
+        userToBePersisted.setProjects(projects);
+        ResponseEntity<UserDto> responseEntityInsert =
+                restTemplate.withBasicAuth("admin", "admin")
+                        .postForEntity("http://localhost:" + port + "/todolist/users", userToBePersisted, UserDto.class);
+
+        Assert.assertEquals(HttpStatus.OK, responseEntityInsert.getStatusCode());
+
+        ResponseEntity<UserDto> responseEntity = restTemplate.withBasicAuth("admin", "admin").getForEntity(
+                "http://localhost:" + port + "/todolist/users/user/{id}", UserDto.class, responseEntityInsert.getBody().getId());
+
+        Assert.assertEquals(HttpStatus.OK.value(), responseEntity.getStatusCodeValue());
+        UserDto user = responseEntity.getBody();
+        Assert.assertNotNull(user);
+        Assert.assertEquals(responseEntityInsert.getBody().getId(), user.getId());
+    }
 
     @Test
     public void getUserByName() {
-        final ResponseEntity<List<UserDto>> responseEntity = restTemplate.exchange(
-                "http://localhost:" + port + "/todolist/users/Fotache/Mirela",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<UserDto>>() {
-                });
+        final ResponseEntity<List<UserDto>> responseEntity = restTemplate.withBasicAuth("admin", "admin")
+                .exchange(
+                        "http://localhost:" + port + "/todolist/users/Fotache/Mirela",
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<List<UserDto>>() {
+                        });
         List<UserDto> users = responseEntity.getBody();
         Assert.assertEquals(HttpStatus.OK.value(), responseEntity.getStatusCodeValue());
         Assert.assertNotNull(users);
@@ -95,25 +116,32 @@ public class UserControllerTest {
 
     @Test
     public void getAllUsers() {
-        final ResponseEntity<RestResponsePage<UserDto>> responseEntity = restTemplate.exchange(
-                "http://localhost:"+port+"/todolist/users/",
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<RestResponsePage<UserDto>>() {
-                });
+        final ResponseEntity<RestResponsePage<UserDto>> responseEntity = restTemplate.withBasicAuth("admin", "admin")
+                .exchange(
+                        "http://localhost:" + port + "/todolist/users/",
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<RestResponsePage<UserDto>>() {
+                        });
         RestResponsePage<UserDto> body = responseEntity.getBody();
 
         Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         Assert.assertNotNull(body);
-        Assert.assertTrue(body.getContent().size()>0);
-        Assert.assertEquals("mifo",body.getContent().get(0).getAlias());
+        Assert.assertTrue(body.getContent().size() > 0);
+        Assert.assertEquals("mifo", body.getContent().get(0).getAlias());
     }
 
     @Test
     public void insertUser() {
         UserDto userToBePersisted = UserSupplier.supplyUserDto2ForInsert();
+        Set<ProjectDto> projects = new HashSet<>();
+        ProjectDto project = new ProjectDto();
+        project.setLabel("project");
+        projects.add(project);
+        userToBePersisted.setProjects(projects);
         ResponseEntity<UserDto> responseEntity =
-                restTemplate.postForEntity("http://localhost:" + port + "/todolist/users", userToBePersisted, UserDto.class);
+                restTemplate.withBasicAuth("admin", "admin")
+                        .postForEntity("http://localhost:" + port + "/todolist/users", userToBePersisted, UserDto.class);
 
         Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         UserDto user = responseEntity.getBody();
@@ -125,12 +153,14 @@ public class UserControllerTest {
     public void updateUser() {
         UserDto userToBePersisted = UserSupplier.supplyUserDtoForUpdate();
         ResponseEntity<UserDto> userToBeUpdated =
-                restTemplate.postForEntity("http://localhost:" + port + "/todolist/users", userToBePersisted, UserDto.class);
+                restTemplate.withBasicAuth("admin", "admin")
+                        .postForEntity("http://localhost:" + port + "/todolist/users", userToBePersisted, UserDto.class);
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<UserDto> requestEntity = new HttpEntity<UserDto>(userToBeUpdated.getBody(), requestHeaders);
         ResponseEntity<UserDto> responseEntity =
-                restTemplate.exchange("http://localhost:" + port + "/todolist/users/"+ userToBeUpdated.getBody().getId(), HttpMethod.PUT, requestEntity, UserDto.class);
+                restTemplate.withBasicAuth("admin", "admin")
+                        .exchange("http://localhost:" + port + "/todolist/users/" + userToBeUpdated.getBody().getId(), HttpMethod.PUT, requestEntity, UserDto.class);
         UserDto user = responseEntity.getBody();
 
         Assert.assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -142,12 +172,14 @@ public class UserControllerTest {
     public void deleteUser() {
         UserDto userToBeDeleted = UserSupplier.supplyUserDtoForDelete();
         ResponseEntity<UserDto> persistedUser =
-                restTemplate.postForEntity("http://localhost:" + port + "/todolist/users", userToBeDeleted, UserDto.class);
+                restTemplate.withBasicAuth("admin", "admin")
+                        .postForEntity("http://localhost:" + port + "/todolist/users", userToBeDeleted, UserDto.class);
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<UserDto> requestEntity = new HttpEntity<UserDto>(persistedUser.getBody(), requestHeaders);
         ResponseEntity<Boolean> responseEntity =
-                restTemplate.exchange("http://localhost:" + port + "/todolist/users/"+persistedUser.getBody().getId(), HttpMethod.DELETE, requestEntity, Boolean.class);
+                restTemplate.withBasicAuth("admin", "admin")
+                        .exchange("http://localhost:" + port + "/todolist/users/" + persistedUser.getBody().getId(), HttpMethod.DELETE, requestEntity, Boolean.class);
 
         Assert.assertEquals(HttpStatus.NO_CONTENT, responseEntity.getStatusCode());
     }

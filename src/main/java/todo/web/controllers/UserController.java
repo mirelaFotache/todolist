@@ -34,6 +34,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserByAlias(alias).get());
     }
 
+    @GetMapping(value = "/authenticate/{alias}/password")
+    public ResponseEntity<UserDto> findByAliasAndPassword(@PathVariable("alias") String alias,@PathVariable("password") String password) {
+        return ResponseEntity.ok(userService.findByAliasAndPassword(alias,password).get());
+    }
+
     @GetMapping
     public ResponseEntity<Page<UserDto>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());

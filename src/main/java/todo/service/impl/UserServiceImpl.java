@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import todo.repository.ProjectRepository;
 import todo.repository.UserRepository;
 import todo.repository.models.Project;
@@ -36,7 +37,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDto> getUserById(String id) {
-        return Optional.of(UserAdapter.toDto(userRepository.findById(UUID.fromString(id)).get()));
+        final User user = userRepository.findById(UUID.fromString(id)).get();
+        return Optional.of(UserAdapter.toDto(user));
     }
 
     @Override
@@ -47,6 +49,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UserDto> getUserByAlias(String alias) {
         return Optional.of(UserAdapter.toDto(userRepository.getUserByAlias(alias)));
+    }
+
+    @Override
+    @Transactional(value = Transactional.TxType.REQUIRED)
+    public Optional<UserDto> findByAliasAndPassword(String alias, String password) {
+        User user = userRepository.findByAliasAndPassword(alias, password);
+        return Optional.of(UserAdapter.toDto(user));
     }
 
     @Override
@@ -64,19 +73,22 @@ public class UserServiceImpl implements UserService {
         final User user = UserAdapter.fromDto(userDto);
         // Find projects that exist in the database and add them to user object. Save() method does persist when project does not have
         // id set and update if an project with id was found in the database
-        products.forEach(project -> {
-            Set<Project> projects = new HashSet<>();
-            final Project dbProject = projectRepository.findByLabelEquals(project.getLabel());
-            if (dbProject != null) {
-                dbProject.setLabel(project.getLabel());
-                projects.add(dbProject);
-            } else {
-                final Project projectNew = new Project();
-                projectNew.setLabel(project.getLabel());
-                projects.add(projectNew);
-            }
-            user.setProjects(projects);
-        });
+        if (products != null)
+            products.forEach(project -> {
+                Set<Project> projects = new HashSet<>();
+                final Project dbProject = projectRepository.findByLabelEquals(project.getLabel());
+                if (dbProject != null) {
+                    dbProject.setLabel(project.getLabel());
+                    dbProject.setUsers(null);
+                    projects.add(dbProject);
+                } else {
+                    final Project projectNew = new Project();
+                    projectNew.setLabel(project.getLabel());
+                    projects.add(projectNew);
+                }
+                user.setProjects(projects);
+            });
+        //TODO check and if role already exists not insert it again
 
         if (isNotValidMsg.isEmpty()) {
             return Optional.of(UserAdapter.toDto(userRepository.save(user)));

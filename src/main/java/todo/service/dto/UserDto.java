@@ -2,6 +2,7 @@ package todo.service.dto;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.List;
 import java.util.Set;
 
 public class UserDto {
@@ -20,7 +21,15 @@ public class UserDto {
     @Size(max = 50)
     private String alias;
 
+    @NotEmpty
+    @Size(max = 50)
+    private String password;
+
+    private Boolean active;
+
     private Set<ProjectDto> projects;
+
+    private Set<RoleDto> roles;
 
     public String getId() {
         return id;
@@ -60,5 +69,29 @@ public class UserDto {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public Set<RoleDto> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleDto> roles) {
+        this.roles = roles;
     }
 }

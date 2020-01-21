@@ -16,4 +16,6 @@ public interface UserRepository extends CrudRepository<User, UUID> {
 
     @Query("select user from User user where user.alias=:alias")
     User getUserByAlias(@Param("alias") String alias);
+
+    User findByAliasAndPassword(String alias, String password);
 }

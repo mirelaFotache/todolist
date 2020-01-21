@@ -45,6 +45,14 @@ public class UserSupplier {
         user.setLastName("Raluca");
         return user;
     }
+    public static UserDto supplyUserDtoForInsertWithId() {
+        UserDto user = new UserDto();
+        user.setId(UUID.randomUUID().toString());
+        user.setAlias("deliuta");
+        user.setFirstName("Fotache");
+        user.setLastName("Delia");
+        return user;
+    }
 
     public static UserDto supplyUserDtoForUpdate() {
         UserDto user = new UserDto();

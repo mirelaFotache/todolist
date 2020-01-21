@@ -16,6 +16,8 @@ public interface UserService {
 
     public Optional<UserDto> getUserByAlias(String alias);
 
+    public Optional<UserDto> findByAliasAndPassword(String alias, String password);
+
     public Page<UserDto> getAllUsers();
 
     public Optional<UserDto> insertUser(UserDto userDto);
