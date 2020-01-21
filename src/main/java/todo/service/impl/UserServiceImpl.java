@@ -5,18 +5,18 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import todo.repository.ProjectRepository;
 import todo.repository.UserRepository;
+import todo.repository.models.Project;
 import todo.repository.models.User;
 import todo.service.api.UserService;
+import todo.service.dto.ProjectDto;
 import todo.service.dto.UserAdapter;
 import todo.service.dto.UserDto;
 import todo.service.exceptions.InvalidParameterException;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -27,9 +27,11 @@ public class UserServiceImpl implements UserService {
     public static final String USERDTO_DUPLICATE_ALIAS = "userdto.duplicate.alias";
 
     private UserRepository userRepository;
+    private ProjectRepository projectRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, ProjectRepository projectRepository) {
         this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
     }
 
     @Override
@@ -58,8 +60,30 @@ public class UserServiceImpl implements UserService {
     @Transactional()
     public Optional<UserDto> insertUser(UserDto userDto) {
         String isNotValidMsg = isValidUser(userDto.getAlias());
+        Set<ProjectDto> products = userDto.getProjects();
+        final User user = UserAdapter.fromDto(userDto);
+        // Find projects that exist in the database and add them to user object. Save() method does persist when project does not have
+        // id set and update if an project with id was found in the database
+        if (products != null) {
+            Set<Project> projects= new HashSet<>();
+            products.forEach(project -> {
+                final Project projectByName = projectRepository.getProjectByName(project.getLabel());
+                if (projectByName != null) {
+                    final UUID id = projectByName.getId();
+                    if (id != null) {
+                        projectByName.setLabel(project.getLabel());
+                        projects.add(projectByName);
+                    }
+                }else{
+                    final Project projectNew = new Project();
+                    projectNew.setLabel(project.getLabel());
+                    projects.add(projectNew);
+                }
+            });
+            user.setProjects(projects);
+        }
         if (isNotValidMsg.isEmpty()) {
-            return Optional.of(UserAdapter.toDto(userRepository.save(UserAdapter.fromDto(userDto))));
+            return Optional.of(UserAdapter.toDto(userRepository.save(user)));
         } else {
             throw new InvalidParameterException(isNotValidMsg);
         }
@@ -71,7 +95,7 @@ public class UserServiceImpl implements UserService {
         if (id != null) {
             Optional<User> userOptional = userRepository.findById(UUID.fromString(id));
             if (userOptional.isPresent()) {
-                if(userDto.getAlias()!=null) {
+                if (userDto.getAlias() != null) {
                     if (!userDto.getAlias().equals(userOptional.get().getAlias())) {
                         String isNotValidMsg = isValidUser(userDto.getAlias());
                         if (isNotValidMsg.isEmpty()) {
@@ -80,7 +104,7 @@ public class UserServiceImpl implements UserService {
                     }
                     UserAdapter.fromDtoToUser(userDto, userOptional.get());
                     return Optional.of(UserAdapter.toDto(userRepository.save(userOptional.get())));
-                }else{
+                } else {
                     throw new InvalidParameterException("userdto.notempty.alias");
                 }
             } else {
@@ -119,5 +143,9 @@ public class UserServiceImpl implements UserService {
 
     public UserRepository getUserRepository() {
         return userRepository;
+    }
+
+    public ProjectRepository getProjectRepository() {
+        return projectRepository;
     }
 }

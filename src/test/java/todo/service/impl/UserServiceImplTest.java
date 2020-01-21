@@ -2,35 +2,30 @@ package todo.service.impl;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import todo.repository.ProjectRepository;
 import todo.repository.UserRepository;
-import todo.repository.models.Project;
 import todo.repository.models.User;
-import todo.service.dto.UserAdapter;
 import todo.service.dto.UserDto;
 import todo.service.exceptions.InvalidParameterException;
-import todo.utils.ProjectSupplier;
 import todo.utils.UserSupplier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class UserServiceImplTest {
 
-    private ProjectRepository projectRepository = Mockito.mock(ProjectRepository.class);
-
-    private UserServiceImpl userService = new UserServiceImpl(Mockito.mock(UserRepository.class));
+    private UserServiceImpl userService = new UserServiceImpl(Mockito.mock(UserRepository.class), Mockito.mock(ProjectRepository.class));
     private UserRepository userRepository = userService.getUserRepository();
+    private ProjectRepository projectRepository = userService.getProjectRepository();
     private List<User> users = new ArrayList<>();
 
     @Test
@@ -74,7 +69,7 @@ public class UserServiceImplTest {
         Assert.assertEquals("Mirela", foundUser.getLastName());
     }
 
-   /* @Test
+    @Test
     public void insertUser() {
         User suppliedUser = UserSupplier.supplyUserForInsert();
         UserDto suppliedUserDto = UserSupplier.supplyUserDtoForInsert();
@@ -94,7 +89,7 @@ public class UserServiceImplTest {
         when(userRepository.save(any(User.class))).thenReturn(suppliedUser);
 
         Optional<UserDto> persistedUserDTO = userService.insertUser(suppliedUserDto);
-    }*/
+    }
 
     @Test
     public void updateUser() {
@@ -124,7 +119,7 @@ public class UserServiceImplTest {
         userService.updateUser(id.toString(), suppliedUserDto);
     }
 
-    @Test(expected = InvalidParameterException.class)
+/*    @Test(expected = InvalidParameterException.class)
     public void updateUserDuplicateAlias() {
         User suppliedUser = UserSupplier.supplyUserForInsert();
         UUID id = UUID.randomUUID();
@@ -135,7 +130,7 @@ public class UserServiceImplTest {
         when(userRepository.save(any(User.class))).thenReturn(suppliedUser);
 
         userService.updateUser(id.toString(), suppliedUserDto);
-    }
+    }*/
 
     @Test(expected = InvalidParameterException.class)
     public void updateUserIdNull() {
