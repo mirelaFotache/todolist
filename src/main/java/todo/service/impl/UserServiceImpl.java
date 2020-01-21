@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
                 if (userDto.getAlias() != null) {
                     if (!userDto.getAlias().equals(userOptional.get().getAlias())) {
                         String isNotValidMsg = isValidUser(userDto.getAlias());
-                        if (isNotValidMsg.isEmpty()) {
+                        if (!isNotValidMsg.isEmpty()) {
                             throw new InvalidParameterException(isNotValidMsg);
                         }
                     }

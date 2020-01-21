@@ -3,10 +3,20 @@ package todo.utils;
 import todo.repository.models.User;
 import todo.service.dto.UserDto;
 
+import java.util.UUID;
+
 public class UserSupplier {
 
     public static User supplyUserForInsert() {
         User user = new User();
+        user.setAlias("mifo");
+        user.setFirstName("Fotache");
+        user.setLastname("Mirela");
+        return user;
+    }
+    public static User supplyUserForInsertWithId() {
+        User user = new User();
+        user.setId(UUID.randomUUID());
         user.setAlias("mifo");
         user.setFirstName("Fotache");
         user.setLastname("Mirela");
@@ -19,6 +29,15 @@ public class UserSupplier {
         user.setLastName("Mirela");
         return user;
     }
+
+    public static User supplyUserForInsert2() {
+        User user = new User();
+        user.setAlias("delia");
+        user.setFirstName("Fotache");
+        user.setLastname("Delia");
+        return user;
+    }
+
     public static UserDto supplyUserDto2ForInsert() {
         UserDto user = new UserDto();
         user.setAlias("ralu");

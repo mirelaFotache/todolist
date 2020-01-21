@@ -34,9 +34,20 @@ public class UserServiceImplTest {
         users.add(suppliedUser);
         Mockito.doReturn(suppliedUser).when(userRepository).getUserByAlias("mifo");
 
-        Optional<UserDto> foundUser = userService.getUserByAlias("mira");
-        Assert.assertNotNull(suppliedUser);
-        Assert.assertEquals("mifo", suppliedUser.getAlias());
+        Optional<UserDto> foundUser = userService.getUserByAlias("mifo");
+        Assert.assertNotNull(foundUser);
+        Assert.assertEquals("mifo", foundUser.get().getAlias());
+    }
+
+    @Test
+    public void getUserById() {
+        final User suppliedUser = UserSupplier.supplyUserForInsertWithId();
+        users.add(suppliedUser);
+        Mockito.doReturn(Optional.ofNullable(suppliedUser)).when(userRepository).findById(suppliedUser.getId());
+
+        Optional<UserDto> foundUser = userService.getUserById(suppliedUser.getId().toString());
+        Assert.assertNotNull(foundUser);
+        Assert.assertEquals(suppliedUser.getId().toString(), foundUser.get().getId());
     }
 
     @Test
@@ -119,18 +130,32 @@ public class UserServiceImplTest {
         userService.updateUser(id.toString(), suppliedUserDto);
     }
 
-/*    @Test(expected = InvalidParameterException.class)
+    @Test(expected = InvalidParameterException.class)
     public void updateUserDuplicateAlias() {
-        User suppliedUser = UserSupplier.supplyUserForInsert();
+        User suppliedUser = UserSupplier.supplyUserForInsert2();
         UUID id = UUID.randomUUID();
         suppliedUser.setId(id);
         Mockito.doReturn(Optional.ofNullable(suppliedUser)).when(userRepository).findById(id);
         UserDto suppliedUserDto = UserSupplier.supplyUserDtoForInsert();
-        Mockito.doReturn(suppliedUser).when(userRepository).getUserByAlias(suppliedUserDto.getAlias());
+        Mockito.doReturn(suppliedUser).when(userRepository).getUserByAlias("mifo");
         when(userRepository.save(any(User.class))).thenReturn(suppliedUser);
 
         userService.updateUser(id.toString(), suppliedUserDto);
-    }*/
+    }
+
+    @Test(expected = InvalidParameterException.class)
+    public void updateUserEmptyAlias() {
+        User suppliedUser = UserSupplier.supplyUserForInsert2();
+        UUID id = UUID.randomUUID();
+        suppliedUser.setId(id);
+        Mockito.doReturn(Optional.ofNullable(suppliedUser)).when(userRepository).findById(id);
+        UserDto suppliedUserDto = UserSupplier.supplyUserDtoForInsert();
+        suppliedUserDto.setAlias(null);
+
+        when(userRepository.save(any(User.class))).thenReturn(suppliedUser);
+
+        userService.updateUser(id.toString(), suppliedUserDto);
+    }
 
     @Test(expected = InvalidParameterException.class)
     public void updateUserIdNull() {
