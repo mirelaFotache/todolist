@@ -16,7 +16,7 @@ public class User extends BaseModel {
     @Column(name = "alias")
     private String alias;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "project_user",
             joinColumns = {@JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "user_id_fkey"), referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "project_id", foreignKey = @ForeignKey(name = "project_id_fkey"), referencedColumnName = "id")},

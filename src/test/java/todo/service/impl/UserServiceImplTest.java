@@ -25,10 +25,8 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {UserRepository.class, ProjectRepository.class})
 public class UserServiceImplTest {
 
-    @Autowired
     private ProjectRepository projectRepository = Mockito.mock(ProjectRepository.class);
 
     private UserServiceImpl userService = new UserServiceImpl(Mockito.mock(UserRepository.class));

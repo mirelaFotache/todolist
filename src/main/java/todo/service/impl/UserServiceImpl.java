@@ -26,10 +26,6 @@ public class UserServiceImpl implements UserService {
     public static final String USERDTO_ID_INVALID = "userdto.id.invalid";
     public static final String USERDTO_DUPLICATE_ALIAS = "userdto.duplicate.alias";
 
-    public UserRepository getUserRepository() {
-        return userRepository;
-    }
-
     private UserRepository userRepository;
 
     public UserServiceImpl(UserRepository userRepository) {
@@ -114,5 +110,9 @@ public class UserServiceImpl implements UserService {
         if (user != null)
             msg = USERDTO_DUPLICATE_ALIAS;
         return msg;
+    }
+
+    public UserRepository getUserRepository() {
+        return userRepository;
     }
 }

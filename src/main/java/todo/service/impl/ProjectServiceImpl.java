@@ -23,6 +23,7 @@ import java.util.stream.StreamSupport;
 public class ProjectServiceImpl implements ProjectService {
 
     public static final String LABEL = "projectdto.invalid.parameter.label";
+
     private ProjectRepository projectRepository;
 
     public ProjectServiceImpl(ProjectRepository projectRepository) {
@@ -88,5 +89,9 @@ public class ProjectServiceImpl implements ProjectService {
         if (project!=null)
             msg = LABEL;
         return msg;
+    }
+
+    public ProjectRepository getProjectRepository() {
+        return projectRepository;
     }
 }
