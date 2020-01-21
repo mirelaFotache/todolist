@@ -33,6 +33,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<UserDto> getUserById(String id) {
+        return Optional.of(UserAdapter.toDto(userRepository.findById(UUID.fromString(id)).get()));
+    }
+
+    @Override
     public Optional<List<UserDto>> getUsersByName(String firstName, String lastName) {
         return Optional.of(UserAdapter.toDtoSet(new ArrayList<>(userRepository.getUsersByName(firstName, lastName))));
     }

@@ -10,6 +10,8 @@ import java.util.Optional;
 @Service
 public interface UserService {
 
+    public Optional<UserDto> getUserById(String id);
+
     public Optional<List<UserDto>> getUsersByName(String firstName, String lastName);
 
     public Optional<UserDto> getUserByAlias(String alias);

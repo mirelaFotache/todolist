@@ -74,7 +74,7 @@ public class UserServiceImplTest {
         Assert.assertEquals("Mirela", foundUser.getLastName());
     }
 
-    @Test
+   /* @Test
     public void insertUser() {
         User suppliedUser = UserSupplier.supplyUserForInsert();
         UserDto suppliedUserDto = UserSupplier.supplyUserDtoForInsert();
@@ -94,7 +94,7 @@ public class UserServiceImplTest {
         when(userRepository.save(any(User.class))).thenReturn(suppliedUser);
 
         Optional<UserDto> persistedUserDTO = userService.insertUser(suppliedUserDto);
-    }
+    }*/
 
     @Test
     public void updateUser() {

@@ -19,6 +19,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping(value = "/user/{id}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable("id") String id) {
+        return ResponseEntity.ok(userService.getUserById(id).get());
+    }
+
     @GetMapping(value = "/{firstName}/{lastName}")
     public ResponseEntity<List<UserDto>> getUserByName(@PathVariable("firstName") String firstName, @PathVariable("lastName") String lastName) {
         return ResponseEntity.ok(userService.getUsersByName(firstName, lastName).get());
