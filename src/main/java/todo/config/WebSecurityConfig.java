@@ -8,22 +8,38 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import todo.authentication.CustomAuthenticationProvider;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import todo.authenticationjwt.JwtAuthenticationEntryPoint;
+import todo.authenticationjwt.JwtAuthenticationProvider;
+import todo.authenticationjwt.JwtAuthenticationTokenFilter;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig
-        extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private CustomAuthenticationProvider authProvider;
+    private JwtAuthenticationEntryPoint unauthorizedHandler;
+
+    @Autowired
+    private JwtAuthenticationProvider jwtAuthenticationProvider;
+
+    @Autowired
+    public void configureAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) {
+        authenticationManagerBuilder.authenticationProvider(jwtAuthenticationProvider);
+    }
+
+    @Bean
+    public JwtAuthenticationTokenFilter authenticationTokenFilterBean() {
+        return new JwtAuthenticationTokenFilter();
+    }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
                 .csrf().disable()
+                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/users/**", "/project/**", "/task/**", "/taskitems/**", "/language/**", "/contactdetails/**")
                 .hasAnyRole("ADMIN", "USER")
@@ -40,29 +56,10 @@ public class WebSecurityConfig
                 .hasAnyRole( "USER")
                 .antMatchers(HttpMethod.DELETE, "/task/**", "/taskitems/**", "/language/**", "/contactdetails/**")
                 .hasAnyRole("USER")
-                .anyRequest().authenticated()
-                .and()
-                .httpBasic()
-                ;
+                .anyRequest().authenticated();
+
+        httpSecurity.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.headers().cacheControl();
     }
 
-/*    @Bean
-    public UserDetailsService userDetailsService() {
-
-        User.UserBuilder users = User.withDefaultPasswordEncoder();
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(users.username("user").password("user").roles("USER").build());
-        manager.createUser(users.username("admin").password("admin").roles("USER", "ADMIN").build());
-        return manager;
-    }*/
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(authProvider);
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }

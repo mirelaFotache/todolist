@@ -26,3 +26,8 @@ todo:
     - name: Management of TODOs
   language: FRENCH
 
+jwt:
+  header: Authorization
+  secret: mySecret
+
+
