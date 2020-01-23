@@ -17,3 +17,6 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+jwt:
+  header: Authorization
+  secret: mySecret

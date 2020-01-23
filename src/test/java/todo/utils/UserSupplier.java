@@ -12,6 +12,7 @@ public class UserSupplier {
         user.setAlias("mifo");
         user.setFirstName("Fotache");
         user.setLastname("Mirela");
+        user.setPassword("mifo");
         return user;
     }
     public static User supplyUserForInsertWithId() {
@@ -20,6 +21,7 @@ public class UserSupplier {
         user.setAlias("mifo");
         user.setFirstName("Fotache");
         user.setLastname("Mirela");
+        user.setPassword("mifo");
         return user;
     }
     public static UserDto supplyUserDtoForInsert() {
@@ -27,6 +29,7 @@ public class UserSupplier {
         user.setAlias("mifo");
         user.setFirstName("Fotache");
         user.setLastName("Mirela");
+        user.setPassword("mifo");
         return user;
     }
 
@@ -35,6 +38,7 @@ public class UserSupplier {
         user.setAlias("delia");
         user.setFirstName("Fotache");
         user.setLastname("Delia");
+        user.setPassword("delia");
         return user;
     }
 
@@ -43,6 +47,7 @@ public class UserSupplier {
         user.setAlias("ralu");
         user.setFirstName("Cristian");
         user.setLastName("Raluca");
+        user.setPassword("ralu");
         return user;
     }
     public static UserDto supplyUserDtoForInsertWithId() {
@@ -51,6 +56,7 @@ public class UserSupplier {
         user.setAlias("deliuta");
         user.setFirstName("Fotache");
         user.setLastName("Delia");
+        user.setPassword("deliuta");
         return user;
     }
 
@@ -59,6 +65,7 @@ public class UserSupplier {
         user.setAlias("mari");
         user.setFirstName("Enescu");
         user.setLastName("Maria");
+        user.setPassword("mari");
         return user;
     }
 
@@ -67,6 +74,7 @@ public class UserSupplier {
         user.setAlias("robi");
         user.setFirstName("Marcu");
         user.setLastName("Robert");
+        user.setPassword("robi");
         return user;
     }
 }
