@@ -41,6 +41,8 @@ public class UserControllerTest {
     private UserRepository userRepository = mock(UserRepository.class);
 
     private static boolean setUpIsDone = false;
+    
+    //Token is generated with auth server and expires in the year 2400
     private static final String TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJhdXRoIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJzdWIiOiJhZG1pbiIsImlhdCI6MTU3OTc3NzQ3NywiZXhwIjoxMzU2OTU0NDgwMH0.hJo9nGhkB6jTwkjvMzUtRDQROb888JyaMoAP8HtuEn8N-lNFb63SX2vaGSaADUTtHGSOQE3pmQhzrMlG-BqorA";
 
     @Before
