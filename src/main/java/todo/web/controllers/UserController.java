@@ -31,10 +31,11 @@ public class UserController {
 
     @GetMapping(value = "/{alias}")
     public ResponseEntity<UserDto> getUserByAlias(@PathVariable("alias") String alias) {
-        return ResponseEntity.ok(userService.getUserByAlias(alias).get());
+        final UserDto body = userService.getUserByAlias(alias).get();
+        return ResponseEntity.ok(body);
     }
 
-    @GetMapping(value = "/authenticate/{alias}/password")
+    @GetMapping(value = "/authenticate/{alias}/{password}")
     public ResponseEntity<UserDto> findByAliasAndPassword(@PathVariable("alias") String alias,@PathVariable("password") String password) {
         return ResponseEntity.ok(userService.findByAliasAndPassword(alias,password).get());
     }

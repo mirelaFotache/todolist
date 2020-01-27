@@ -36,3 +36,6 @@ private PublicKey getPublicKey() {
 NOTE:
  - Call POST to retrieve the token: http://localhost:8889/auth_sym_key/token
  - Call http://localhost:8080/users  with type of authorisation: OAuth2 and access token from above call
+
+   Decode JWT token to see the content
+   https://jwt.io/
