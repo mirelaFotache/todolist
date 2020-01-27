@@ -3,6 +3,10 @@ package todo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
+import todo.authenticationjwt.CertificateService;
+import todo.authenticationjwt.JwtTokenService;
 import todo.repository.UserRepository;
 import todo.repository.models.Role;
 import todo.repository.models.User;
@@ -35,6 +39,16 @@ public class ToDoApplication {
             u.setRoles(roles);
             repository.save(u);
         }
+        CertificateService certificateService = context.getBean(CertificateService.class);
+        certificateService.getCertificate();
     }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
     //TODO  Spring Profiles
 }
+
+
