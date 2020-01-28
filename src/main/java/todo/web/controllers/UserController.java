@@ -17,7 +17,6 @@ public class UserController {
     public static final String EXCEPTION_EMPTY_OBJECT_RETURNED = "exception.empty.object.returned";
     private UserService userService;
 
-    public UserController(){}
     public UserController(UserService userService) {
         this.userService = userService;
     }
