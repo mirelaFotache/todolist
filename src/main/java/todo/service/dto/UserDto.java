@@ -3,6 +3,7 @@ package todo.service.dto;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class UserDto {
@@ -93,5 +94,22 @@ public class UserDto {
 
     public void setRoles(Set<RoleDto> roles) {
         this.roles = roles;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDto userDto = (UserDto) o;
+        return Objects.equals(id, userDto.id) &&
+                Objects.equals(firstName, userDto.firstName) &&
+                Objects.equals(lastName, userDto.lastName) &&
+                Objects.equals(alias, userDto.alias) &&
+                Objects.equals(password, userDto.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, alias, password);
     }
 }

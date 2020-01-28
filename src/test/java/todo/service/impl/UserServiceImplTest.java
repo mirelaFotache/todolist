@@ -25,7 +25,7 @@ public class UserServiceImplTest {
 
     private UserServiceImpl userService = new UserServiceImpl(Mockito.mock(UserRepository.class), Mockito.mock(ProjectRepository.class));
     private UserRepository userRepository = userService.getUserRepository();
-    private ProjectRepository projectRepository = userService.getProjectRepository();
+    //private ProjectRepository projectRepository = userService.getProjectRepository();
     private List<User> users = new ArrayList<>();
 
     @Test
