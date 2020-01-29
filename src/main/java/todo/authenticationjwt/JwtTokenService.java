@@ -4,11 +4,13 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-import todo.service.exceptions.OAuth2Exception;
+import todo.service.exceptions.ToDoListException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,16 +23,18 @@ import java.util.function.Function;
 
 @Component
 public class JwtTokenService {
-    private static final String CERTIFICATE_ALIAS = "jwtcert";
-    private static final String CERTIFICATE_NAME = "data/keystore.jks";
-    public static final String KEYSTORE_FILE_NOT_AVAILABLE = "exception.keystore.file.not.available";
-
-    private String secret;
 
     @Autowired
-    public JwtTokenService(@Value("${jwt.secret}") String secret) {
-        this.secret = secret;
-    }
+    private MessageSource messageSource;
+
+    @Value("${jwt.secret}")
+    private String secret;
+
+    @Value("${certificate.alias}")
+    private String certificateAlias;
+
+    @Value("${certificate.name}")
+    private String certificateName;
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -93,20 +97,18 @@ public class JwtTokenService {
         try {
             ClassLoader classLoader = JwtTokenService.class.getClassLoader();
 
-            final URL resource = classLoader.getResource(CERTIFICATE_NAME);
+            final URL resource = classLoader.getResource(certificateName);
             if (resource != null) {
                 File file = new File(resource.getFile());
                 KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
                 keystore.load(new FileInputStream(file), secret.toCharArray());
-                Certificate cert = keystore.getCertificate(CERTIFICATE_ALIAS);
+                Certificate cert = keystore.getCertificate(certificateAlias);
                 return cert.getPublicKey();
             } else {
-                throw new OAuth2Exception(KEYSTORE_FILE_NOT_AVAILABLE);
+                throw new ToDoListException(messageSource.getMessage("exception.keystore.file.not.available", null, LocaleContextHolder.getLocale()));
             }
         } catch (Exception e) {
-            throw new OAuth2Exception(KEYSTORE_FILE_NOT_AVAILABLE);
+            throw new ToDoListException(messageSource.getMessage("exception.keystore.file.not.available", null, LocaleContextHolder.getLocale()));
         }
     }
-
-
 }

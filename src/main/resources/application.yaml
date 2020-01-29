@@ -2,4 +2,8 @@ spring:
   profiles:
     active: @spring.profiles.active@
 
+certificate:
+    alias: jwtcert
+    name: data/keystore.jks
+
 
