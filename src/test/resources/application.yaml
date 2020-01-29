@@ -20,3 +20,11 @@ logging:
 jwt:
   header: Authorization
   secret: mySecret
+  base_url: http://localhost:8889
+
+certificate:
+  alias: jwtcert
+  name: data/keystore.jks
+  nameAndPath: src/main/resources/data/keystore.jks
+  url: /auth_asym_key/certificate
+  bits: 1024

@@ -19,7 +19,9 @@ spring:
         ddl-auto: update
         hbm2ddl:
           auto: update
-
+  devtools:
+    restart:
+      enabled: false
 todo:
   settings:
     - name: TO DO List
@@ -29,3 +31,4 @@ todo:
 jwt:
   header: Authorization
   secret: mySecret
+  base_url: http://todolist.com:8889

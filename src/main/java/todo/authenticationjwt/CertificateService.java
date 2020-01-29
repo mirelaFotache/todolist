@@ -1,9 +1,13 @@
 package todo.authenticationjwt;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import todo.service.exceptions.OAuth2Exception;
 
@@ -18,25 +22,45 @@ import java.util.concurrent.Future;
 @Component
 public class CertificateService {
 
-    private static final String CERTIFICATE_NAME = "src/main/resources/data/keystore.jks";
-    private static final String URL_FOR_CERTIFICATE_RETRIEVAL = "http://localhost:8889/auth_asym_key/certificate";
-    private static final String FILE_RETRIEVAL_FROM_URL_FAILED = "exception.file.retrieval.from.url.failed";
-    private static final String FILE_HAS_BEEN_SAVED = "File has been saved";
+
+    @Autowired
+    private MessageSource messageSource;
+
+    @Value("${certificate.nameAndPath}")
+    private String nameAndPath;
+
+    @Value("${jwt.base_url}")
+    private String baseUrl;
+
+    @Value("${certificate.url}")
+    private String url;
+
+    @Value("${certificate.bits}")
+    private int bits;
 
     @Autowired
     private RestTemplate restTemplate;
 
     public void getCertificate() {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        boolean pageExists = true;
+        final String url = baseUrl + this.url;
+        try {
+            restTemplate.headForHeaders(url);
+        } catch (RestClientException e) {
+            pageExists = false;
+        }
+        if (pageExists) {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 
-        ResponseEntity<Resource> exchange = restTemplate.exchange(URL_FOR_CERTIFICATE_RETRIEVAL, HttpMethod.GET, new HttpEntity<InputStream>(httpHeaders), Resource.class);
-        try (InputStream inputStream = Objects.requireNonNull(exchange.getBody()).getInputStream();) {
+            ResponseEntity<Resource> exchange = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<InputStream>(httpHeaders), Resource.class);
+            try (InputStream inputStream = Objects.requireNonNull(exchange.getBody()).getInputStream();) {
 
-            Future<String> s = saveFile(inputStream);
-            System.out.println(s.get());
-        } catch (Exception e) {
-            throw new OAuth2Exception(FILE_RETRIEVAL_FROM_URL_FAILED);
+                Future<String> s = saveFile(inputStream);
+                System.out.println(s.get());
+            } catch (Exception e) {
+                throw new OAuth2Exception(messageSource.getMessage("exception.file.retrieval.from.url.failed", null, LocaleContextHolder.getLocale()));
+            }
         }
     }
 
@@ -45,17 +69,17 @@ public class CertificateService {
                 = new CompletableFuture<>();
 
         Executors.newCachedThreadPool().submit(() -> {
-            File file = new File(".", CERTIFICATE_NAME);
+            File file = new File(".", nameAndPath);
             try (FileOutputStream outputStream = new FileOutputStream(file)) {
 
                 int read;
-                byte[] bytes = new byte[1024];
+                byte[] bytes = new byte[bits];
 
                 while ((read = inputStream.read(bytes)) != -1) {
                     outputStream.write(bytes, 0, read);
                 }
             }
-            completableFuture.complete(FILE_HAS_BEEN_SAVED);
+            completableFuture.complete(messageSource.getMessage("notification.file.has.been.saved", null, LocaleContextHolder.getLocale()));
             return null;
         });
 

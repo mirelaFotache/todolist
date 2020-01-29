@@ -5,5 +5,8 @@ spring:
 certificate:
     alias: jwtcert
     name: data/keystore.jks
+    nameAndPath: src/main/resources/data/keystore.jks
+    url: /auth_asym_key/certificate
+    bits: 1024
 
 

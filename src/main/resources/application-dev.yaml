@@ -19,6 +19,9 @@ spring:
         ddl-auto: update
         hbm2ddl:
           auto: update
+  devtools:
+    restart:
+      enabled: true
 
 todo:
   settings:
@@ -29,3 +32,4 @@ todo:
 jwt:
   header: Authorization
   secret: mySecret
+  base_url: http://localhost:8889
