@@ -3,17 +3,14 @@ package todo.web.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import todo.config.YAMLToDoConfig;
 
-import javax.transaction.Transactional;
 import java.util.Locale;
 
-@RestController
-@RequestMapping(value = "/tests")
-@Transactional
+@Controller
 public class TestController {
 
     @Autowired
@@ -43,4 +40,9 @@ public class TestController {
         return ResponseEntity.ok(messageSource.getMessage("application.name", null, locale));
     }
 
+    @GetMapping("/welcome")
+    public String homePage(Model model) {
+        model.addAttribute("message", "message");
+        return "welcome";
+    }
 }
