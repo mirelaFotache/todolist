@@ -1,12 +1,9 @@
 package todo;
 
-import org.springframework.context.annotation.PropertySource;
-import todo.authenticationjwt.CertificateService;
-import todo.config.YAMLToDoConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
+import todo.authenticationjwt.CertificateService;
 import todo.repository.UserRepository;
 import todo.repository.models.Role;
 import todo.repository.models.User;

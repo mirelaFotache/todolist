@@ -11,7 +11,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import todo.UserApplication;
 import todo.repository.UserRepository;
 import todo.repository.models.User;
 import todo.service.dto.UserDto;
@@ -27,6 +29,7 @@ import static org.mockito.Mockito.mock;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureTestDatabase
+@ContextConfiguration(classes= UserApplication.class)
 public class UserIntegrationTest {
 
     @LocalServerPort
