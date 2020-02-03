@@ -10,4 +10,6 @@ certificate:
     url: /auth_asym_key/certificate
     bits: 1024
 
+server.servlet.context-path: /todolist
+
 
