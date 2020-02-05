@@ -3,6 +3,7 @@ server:
 spring:
   application:
     name: zuul-server
+
 eureka:
   instance:
     prefer-ip-address: true
@@ -10,14 +11,20 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     serviceUrl:
-      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+      defaultZone: ${EUREKA_URI:http://172.18.0.22:8761/eureka}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 zuul:
   sensitiveHeaders: Cookie,Set-Cookie
   routes:
-    spring-security-oauth-resource:
-      path: /todolist/**
-      url: http://localhost:8080/todolist
+    users:
+      url: http://172.18.0.25:8083/todolist/users
     oauth:
-      path: /oauth/**
-      url: http://localhost:8889/oauth
+      url: http://172.18.0.26:8889/oauth
+
+ribbon.eureka.enabled: false

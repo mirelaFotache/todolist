@@ -1,13 +1,12 @@
 spring:
   profiles:
     active: @spring.profiles.active@
-    include: todo
+    include: todo, user
 
 certificate:
     alias: jwtcert
-    name: data/keystore.jks
-    nameAndPath: commons/src/main/resources/data/keystore.jks
-    url: /auth_asym_key/certificate
+    nameAndPath: keystore.jks
+    url: /oauth/auth_asym_key/certificate
     bits: 1024
 
 server.servlet.context-path: /todolist

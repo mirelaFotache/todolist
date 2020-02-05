@@ -1,5 +1,7 @@
 package todo.authenticationjwt;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import todo.exceptions.OAuth2Exception;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +24,7 @@ import java.util.concurrent.Future;
 @Component
 public class CertificateService {
 
+    private static Logger log = LoggerFactory.getLogger(CertificateService.class);
 
     @Autowired
     private MessageSource messageSource;
@@ -69,7 +72,9 @@ public class CertificateService {
                 = new CompletableFuture<>();
 
         Executors.newCachedThreadPool().submit(() -> {
-            File file = new File(".", nameAndPath);
+            File file = new File(new File("").getAbsolutePath(),nameAndPath);
+            log.info(">>>>>>>>>>>>>>> file absolute path: <<< "+file.getAbsolutePath());
+
             try (FileOutputStream outputStream = new FileOutputStream(file)) {
 
                 int read;
