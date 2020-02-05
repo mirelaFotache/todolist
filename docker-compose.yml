@@ -1,0 +1,73 @@
+version: '3'
+services:
+  eureka-server:
+    image: eureka-server
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    ports:
+      - 8761:8761
+    networks:
+      mynet123:
+        ipv4_address: 172.18.0.22
+  zuul-server:
+    image: zuul-server
+    build:
+      context: ./zuul-server
+      dockerfile: Dockerfile
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://discovery:8761/eureka
+    depends_on:
+      - eureka-server
+    ports:
+      - 8762:8762
+    networks:
+      mynet123:
+        ipv4_address: 172.18.0.23
+  user-client:
+    image: user-client
+    build:
+      context: ./user
+      dockerfile: Dockerfile
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://discovery:8761/eureka
+    depends_on:
+      - eureka-server
+    ports:
+      - 8083:8083
+    networks:
+      mynet123:
+        ipv4_address: 172.18.0.25
+  oauth-server:
+    image: oauth-server
+    build:
+      context: ../spring-oauth2
+      dockerfile: Dockerfile
+    environment:
+      - JAVA_OPTS=
+        -DEUREKA_SERVER=http://discovery:8761/eureka
+    depends_on:
+      - eureka-server
+    ports:
+      - 8889:8889
+    networks:
+      mynet123:
+        ipv4_address: 172.18.0.26
+networks:
+  mynet123:
+    external: true
+#networks:
+#  mynet123:
+#    driver: bridge
+#    ipam:
+#      config:
+#        - subnet: 172.18.0.0/16
+
+#  For the database
+#  mkdir -p $HOME/docker/volumes/postgres
+#  go to :
+#  cd C:\Users\mifotache\docker\volumes>
+#  Start postgres
+#  docker run  --net mynet123 --ip 172.18.0.24  -p 5431:5431 --name postgres -e POSTGRES_DB=postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=admin -d -v postgres:/var/lib/postgresql/data  postgres
