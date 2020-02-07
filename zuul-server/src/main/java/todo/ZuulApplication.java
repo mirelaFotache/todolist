@@ -20,8 +20,4 @@ public class ZuulApplication {
         return new PreFilter();
     }
 
-    @Bean
-    public PostFilter postFilter() {
-        return new PostFilter();
-    }
 }

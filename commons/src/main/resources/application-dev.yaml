@@ -16,9 +16,11 @@ spring:
             non_contextual_creation: true
 
         # Hibernate ddl auto (create, create-drop, validate, update)
-        ddl-auto: update
+        ddl-auto: none
         hbm2ddl:
-          auto: update
+          auto: create
+        generate-ddl: true
+
   devtools:
     restart:
       enabled: true
