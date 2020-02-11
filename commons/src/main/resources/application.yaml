@@ -4,10 +4,10 @@ spring:
     include: todo, user
 
 certificate:
-    alias: jwtcert
-    nameAndPath: keystore.jks
-    url: /oauth/auth_asym_key/certificate
-    bits: 1024
+  alias: jwtcert
+  nameAndPath: keystore.jks
+  url: /oauth/auth_asym_key/certificate
+  bits: 1024
 
 #server.servlet.context-path: /todolist
 

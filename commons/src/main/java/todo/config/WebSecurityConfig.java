@@ -41,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/welcome","/eureka/**")
+                .antMatchers(HttpMethod.GET, "/welcome","/eureka/**","/actuator/**","/hystrix/**","/hystrix.stream/**", "/webjars/**","/proxy.stream","/hystrix/monitor")
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/users/**", "/project/**", "/task/**", "/taskitems/**", "/language/**", "/contactdetails/**")
                 .hasAnyRole("ADMIN", "USER")

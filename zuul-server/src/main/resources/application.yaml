@@ -9,7 +9,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: routes,filters
+        include: hystrix.stream, info, health, routes,metrics
 
 eureka:
   client:
@@ -26,6 +26,21 @@ zuul:
       serviceId: users
       strip-prefix: false
     oauth:
-      url: http://localhost:8889/oauth
+      path: /oauth/**
+      serviceId: oauth
+      strip-prefix: false
 
 ribbon.eureka.enabled: true
+hystrix:
+  command:
+    users:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 100000
+
+# Define how many max requests are allowed
+zuul.ribbon-isolation-strategy: THREAD
+hystrix.threadpool.default.coreSize: 1000
+hystrix.threadpool.default.maximumSize: 2000
+hystrix.threadpool.default.maxQueueSize: -1

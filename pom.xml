@@ -22,6 +22,8 @@
         <module>user</module>
         <module>zuul-server</module>
         <module>eureka-server</module>
+        <module>config-server</module>
+        <module>spring-oauth2</module>
     </modules>
 
 </project>

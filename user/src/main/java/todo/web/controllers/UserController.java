@@ -1,6 +1,7 @@
 package todo.web.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +52,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    @GetMapping(value = "/users_fallback")
+    public ResponseEntity<Page<UserDto>> getAllUsersHystrixTest() {
+        return ResponseEntity.ok(userService.getAllUsersHystrixTest());
+    }
+
     @PostMapping
     public ResponseEntity<UserDto> addUser(@RequestBody @Valid UserDto userDto) {
         final UserDto user = userService.insertUser(userDto).orElseThrow(RuntimeException::new);
@@ -67,9 +73,11 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
+    @Value("${user.role}")
+    private String role;
 
     @GetMapping("/status/check")
     public String status() {
-        return "Working on port " + env.getProperty("local.server.port");
+        return "Working on port " + env.getProperty("local.server.port") + " env user.role is "+role;
     }
 }

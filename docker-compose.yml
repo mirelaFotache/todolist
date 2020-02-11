@@ -64,7 +64,6 @@ services:
 
 
 
-
 # variables from environment correspond to links(variables from yaml) used by apps but written with uppercase
 # and : replaced by _
 #localhost correspond to name of the service that is called

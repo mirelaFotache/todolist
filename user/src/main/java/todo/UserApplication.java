@@ -1,9 +1,14 @@
 package todo;
 
+import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.hystrix.EnableHystrix;
+import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import todo.authenticationjwt.CertificateService;
 import todo.repository.UserRepository;
 import todo.repository.models.Role;
@@ -14,6 +19,8 @@ import java.util.Set;
 
 @SpringBootApplication
 @EnableDiscoveryClient
+@EnableHystrix
+@EnableHystrixDashboard
 public class UserApplication {
 
     public static void main(String[] args) {
@@ -45,6 +52,12 @@ public class UserApplication {
     private static void getCertificate(ConfigurableApplicationContext context) {
         CertificateService certificateService = context.getBean(CertificateService.class);
         certificateService.getCertificate();
+    }
+
+    @Bean
+    public ServletRegistrationBean servletRegistration() {
+        ServletRegistrationBean registration = new ServletRegistrationBean(new HystrixMetricsStreamServlet(), "/hystrix.stream");
+        return registration;
     }
 
 }

@@ -20,6 +20,8 @@ public interface UserService {
 
     public Page<UserDto> getAllUsers();
 
+    public Page<UserDto> getAllUsersHystrixTest();
+
     public Optional<UserDto> insertUser(UserDto userDto);
 
     public Optional<UserDto> updateUser(String id, UserDto userDto);

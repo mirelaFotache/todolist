@@ -1,16 +1,17 @@
 package todo.service.impl;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import todo.exceptions.InvalidParameterException;
 import todo.repository.UserRepository;
 import todo.repository.models.User;
 import todo.service.api.UserService;
 import todo.service.dto.UserAdapter;
 import todo.service.dto.UserDto;
-import todo.exceptions.InvalidParameterException;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -63,6 +64,31 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserDto> getAllUsers() {
         List<User> users = StreamSupport.stream(userRepository.findAll().spliterator(), false).collect(Collectors.toList());
+        List<UserDto> collect = users.stream().map(UserAdapter::toDto).collect(Collectors.toList());
+        return new PageImpl<>(collect, PageRequest.of(0, 20, Sort.by("alias")), collect.size());
+    }
+
+    @Override
+    @HystrixCommand(fallbackMethod = "getAllUsers_Fallback")
+    public Page<UserDto> getAllUsersHystrixTest() {
+        List<User> users = StreamSupport.stream(userRepository.findAll().spliterator(), false).collect(Collectors.toList());
+        List<UserDto> collect = users.stream().map(UserAdapter::toDto).collect(Collectors.toList());
+        try {
+            Thread.sleep(60000L);
+        }catch (InterruptedException e){
+            System.out.println("Network fake delay....");
+        }
+        return new PageImpl<>(collect, PageRequest.of(0, 20, Sort.by("alias")), collect.size());
+    }
+
+    @SuppressWarnings("unused")
+    public Page<UserDto> getAllUsers_Fallback() {
+        User user = new User();
+        user.setAlias("default_alias");
+        user.setFirstName("default_first_name");
+        user.setLastname("default_last_name");
+        List<User> users = new ArrayList<>();
+        users.add(user);
         List<UserDto> collect = users.stream().map(UserAdapter::toDto).collect(Collectors.toList());
         return new PageImpl<>(collect, PageRequest.of(0, 20, Sort.by("alias")), collect.size());
     }
