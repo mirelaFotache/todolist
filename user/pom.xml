@@ -15,6 +15,7 @@
     <properties>
         <start-class>todo.UserApplication</start-class>
         <spring-cloud.version>Hoxton.SR1</spring-cloud.version>
+        <use-dev>true</use-dev>
     </properties>
 
     <dependencyManagement>

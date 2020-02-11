@@ -47,6 +47,9 @@
             <id>dev</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>use-dev</name>
+                </property>
             </activation>
             <properties>
                 <spring.profiles.active>dev</spring.profiles.active>
