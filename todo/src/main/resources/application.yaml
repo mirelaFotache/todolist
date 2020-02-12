@@ -1,12 +1,23 @@
 spring:
   application:
-    name: commons
+    name: todo
+  profiles:
+    active: dev
   cloud:
     config:
       uri: http://localhost:8888
       token: eyJhbGciOiJSUzUxMiJ9.eyJhdXRoIjpbeyJhdXRob3JpdHkiOiJST0xFX0FETUlOIn1dLCJzdWIiOiJhZG1pbiIsImlhdCI6MTU4MTQxNDQ3NywiZXhwIjoxMzYwMDk5NDQwMH0.Be22RfnaRQBwaxf3lixWbMSQTrCdyWflreQ0-T_foP5Cpp-0VzKez3qa67s866vDUq8pwYteSastaqTarYhEz1jHCxfn0PPG-PgqstraSJgrVs8y0IBQydY7fizXRCYJzMzg0ULzyVMJ2mG_0u16Mr_Lmva2YgZ2h5UdaJJsZYw
       username: root
       password: s3cr3t
-  profiles:
-    active: @spring.profiles.active@
-      include: todo, user
+
+server:
+  port: ${PORT:0}
+
+eureka:
+  instance:
+    instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
