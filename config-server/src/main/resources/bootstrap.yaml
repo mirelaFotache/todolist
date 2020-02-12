@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: config-server
+  encrypt:
+    key-store:
+      location: classpath:/keystore.jks
+      password: mySecret
+    alias: jwtcert
+    secret: mySecret

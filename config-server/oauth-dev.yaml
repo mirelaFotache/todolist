@@ -1,0 +1,52 @@
+server:
+  port: ${PORT:0}
+
+server.servlet.context-path: /oauth
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=oauthserver
+    username: postgres
+    password: admin
+  jpa:
+    show-sql: true
+
+    ## Hibernate Properties
+    # The SQL dialect makes Hibernate generate better SQL for the chosen database
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL95Dialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+        # Hibernate ddl auto (create, create-drop, validate, update)
+        ddl-auto: none
+        hbm2ddl:
+          auto: create
+        generate-ddl: true
+
+eureka:
+  instance:
+    instanceId: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+
+oauth-conf:
+  language: FRENCH
+
+jwt:
+  secret: mySecret
+  expiration: 604800
+
+certificate:
+  alias: jwtcert
+  nameAndPath: keystore.jks
+  dn: CN=cn, O=o, L=L, ST=il, C= c
+  algorithm: RSA
+  bits: 1024
+  signatureAlgorithm: SHA256WithRSAEncryption
+  secureRandom: SHA1PRNG

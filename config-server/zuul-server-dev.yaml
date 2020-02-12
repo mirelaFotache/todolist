@@ -1,0 +1,45 @@
+server:
+  port: 8762
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream, info, health, routes,metrics
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+
+zuul:
+  sensitiveHeaders: Cookie,Set-Cookie
+  host:
+    socket-timeout-millis: 30000
+  routes:
+    users:
+      path: /users/**
+      serviceId: users
+      strip-prefix: false
+    oauth:
+      path: /oauth/**
+      serviceId: oauth
+      strip-prefix: false
+
+ribbon.eureka.enabled: true
+hystrix:
+  command:
+    users:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 100000
+
+# Define how many max requests are allowed
+zuul.ribbon-isolation-strategy: THREAD
+hystrix.threadpool.default.coreSize: 1000
+hystrix.threadpool.default.maximumSize: 2000
+hystrix.threadpool.default.maxQueueSize: -1
+

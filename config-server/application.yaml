@@ -1,0 +1,45 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=todolist
+    username: postgres
+    password: admin
+  jpa:
+    show-sql: true
+
+    ## Hibernate Properties
+    # The SQL dialect makes Hibernate generate better SQL for the chosen database
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL95Dialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+        # Hibernate ddl auto (create, create-drop, validate, update)
+        ddl-auto: none
+        hbm2ddl:
+          auto: create
+        generate-ddl: true
+
+  devtools:
+    restart:
+      enabled: true
+
+todo:
+  settings:
+    - name: TO DO List
+    - name: Management of TODOs
+  language: FRENCH
+
+#server.servlet.context-path: /todolist
+
+jwt:
+  header: Authorization
+  secret: mySecret
+  base_url: http://localhost:8889
+
+certificate:
+  alias: jwtcert
+  nameAndPath: keystore.jks
+  url: /oauth/auth_asym_key/certificate
+  bits: 1024

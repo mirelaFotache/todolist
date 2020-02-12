@@ -1,0 +1,15 @@
+server:
+  port: 8888
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: file://D:/learningWorkspace/spring-todo-list/config-server
+          timeout: 10
+          clone-on-start: true
+  security:
+    user:
+      name: root
+      password: s3cr3t
