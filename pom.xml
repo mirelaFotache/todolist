@@ -24,6 +24,7 @@
         <module>eureka-server</module>
         <module>config-server</module>
         <module>spring-oauth2</module>
+        <module>spring-batch</module>
     </modules>
 
 </project>
