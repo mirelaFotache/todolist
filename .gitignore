@@ -1,0 +1,7 @@
+/commons/target/
+/config-server/target/
+/spring-oauth2/target/
+/todo/target/
+/user/target/
+/zuul-server/target/
+/eureka-server/target/
