@@ -7,11 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="user" />
-        <module name="commons" />
-        <module name="config-server" />
         <module name="eureka-server" />
+        <module name="config-server" />
         <module name="zuul-server" />
         <module name="todo" />
+        <module name="commons" />
         <module name="spring-oauth2" />
       </profile>
     </annotationProcessing>
