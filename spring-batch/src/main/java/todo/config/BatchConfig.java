@@ -6,19 +6,23 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import todo.task.ModifyBatchUsersTask;
-import todo.task.PersistBatchUsersTask;
-import todo.task.ReadBatchUsersTask;
+import todo.dto.TaskDto;
+import todo.processor.TaskProcessor;
+import todo.reader.TaskReader;
+import todo.task.CustomTasklet;
+import todo.writer.TaskWriter;
 
 import javax.sql.DataSource;
 
 @Configuration
 @EnableBatchProcessing
 public class BatchConfig {
-
     @Autowired
     private DataSource dataSource;
 
@@ -29,27 +33,43 @@ public class BatchConfig {
     private StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    public Step stepOne() {
-        return stepBuilderFactory.get("stepOne").tasklet(new ReadBatchUsersTask()).build();
+    ItemReader<TaskDto> taskDtoItemReader() {
+        return new TaskReader(dataSource);
     }
 
     @Bean
-    public Step stepTwo(){
-        return stepBuilderFactory.get("stepTwo").tasklet(new ModifyBatchUsersTask()).build();
+    ItemProcessor<TaskDto, TaskDto> taskDtoItemProcessor() {
+        return new TaskProcessor();
     }
 
     @Bean
-    public Step stepThree(){
-        return stepBuilderFactory.get("stepThree").tasklet(new PersistBatchUsersTask()).build();
+    ItemWriter<TaskDto> taskDtoItemWriter() {
+        return new TaskWriter();
     }
 
     @Bean
-    public Job demoJob(){
+    public Step stepOne(ItemReader<TaskDto> reader,
+                        ItemProcessor<TaskDto, TaskDto> processor,
+                        ItemWriter<TaskDto> writer) {
+        return stepBuilderFactory.get("stepOne")
+                .<TaskDto, TaskDto>chunk(10) // Retrieve data in chunks of 10 items
+                .reader(reader)
+                .processor(processor)
+                .writer(writer)
+                .build();
+    }
+
+    @Bean
+    public Step stepTwo() {
+        return stepBuilderFactory.get("stepTwo").tasklet(new CustomTasklet()).build();
+    }
+
+    @Bean
+    public Job demoJob() {
         return jobBuilderFactory.get("demoJob")
                 .incrementer(new RunIdIncrementer())
-                .start(stepOne())
+                .start(stepOne(new TaskReader(dataSource), new TaskProcessor(), new TaskWriter()))
                 .next(stepTwo())
-                .next(stepThree())
                 .build();
     }
 
