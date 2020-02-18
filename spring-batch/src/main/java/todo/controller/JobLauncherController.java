@@ -22,17 +22,17 @@ public class JobLauncherController {
     JobLauncher jobLauncher;
 
     @Autowired
-    Job demoJob;
+    Job databaseJob;
 
     @Autowired
-    Job demo2Job;
+    Job fileJob;
 
     @RequestMapping("/demo_job")
     public ResponseEntity<String> handleDemoJob() throws Exception {
         JobParameters params = new JobParametersBuilder()
                 .addString("JobID", String.valueOf(System.currentTimeMillis()))
                 .toJobParameters();
-        jobLauncher.run(demoJob, params);
+        jobLauncher.run(databaseJob, params);
         return new ResponseEntity<String>("Job demoJob executed successfully!", HttpStatus.OK);
     }
 
@@ -41,7 +41,7 @@ public class JobLauncherController {
         JobParameters params = new JobParametersBuilder()
                 .addString("JobID", String.valueOf(System.currentTimeMillis()))
                 .toJobParameters();
-        jobLauncher.run(demo2Job, params);
+        jobLauncher.run(fileJob, params);
         return new ResponseEntity<String>("Job demo2Job executed successfully!", HttpStatus.OK);
     }
 }

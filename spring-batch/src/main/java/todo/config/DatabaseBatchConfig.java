@@ -17,14 +17,17 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import todo.dto.TaskDto;
 import todo.processor.TaskProcessor;
 import todo.reader.DatabaseTaskReader;
-import todo.task.CustomTasklet;
+import todo.task.MyTaskOne;
 import todo.writer.DatabaseTaskWriter;
 
 import javax.sql.DataSource;
 
+/**
+ * OBS: Name of the steps and jobs must be unique at application level !!!
+ */
 @Configuration
 @EnableBatchProcessing
-public class BatchConfig {
+public class DatabaseBatchConfig {
 
     @Autowired
     private DataSource dataSource;
@@ -45,14 +48,24 @@ public class BatchConfig {
     }
 
     @Bean
+    @Qualifier("databaseTaskProcessor")
     ItemProcessor<TaskDto, TaskDto> taskDtoItemProcessor() {
         return new TaskProcessor();
     }
 
     @Bean
+    @Qualifier("databaseTaskWriter")
     ItemWriter<TaskDto> databaseTaskWriter() {
         return new DatabaseTaskWriter(dataSource, jdbcTemplate);
     }
+
+    @Autowired
+    @Qualifier("databaseTaskWriter")
+    private ItemWriter<TaskDto> databaseTaskWriter;
+
+    @Autowired
+    @Qualifier("databaseTaskProcessor")
+    private ItemProcessor<TaskDto,TaskDto> databaseTaskProcessor;
 
     @Bean
     NamedParameterJdbcTemplate jdbcTemplate(DataSource dataSource) {
@@ -60,26 +73,26 @@ public class BatchConfig {
     }
 
     @Bean
-    public Step stepOne() {
-        return stepBuilderFactory.get("stepOne")
+    public Step dbStepOne() {
+        return stepBuilderFactory.get("dbStepOne")
                 .<TaskDto, TaskDto>chunk(10) // Retrieve data in chunks of 10 items
                 .reader(databaseTaskReader())
-                .processor(taskDtoItemProcessor())
-                .writer(databaseTaskWriter())
+                .processor(databaseTaskProcessor)
+                .writer(databaseTaskWriter)
                 .build();
     }
 
     @Bean
-    public Step stepTwo() {
-        return stepBuilderFactory.get("stepTwo").tasklet(new CustomTasklet()).build();
+    public Step dbStepTwo() {
+        return stepBuilderFactory.get("dbStepTwo").tasklet(new MyTaskOne()).build();
     }
 
     @Bean
-    public Job demoJob() {
-        return jobBuilderFactory.get("demoJob")
+    public Job databaseJob() {
+        return jobBuilderFactory.get("databaseJob")
                 .incrementer(new RunIdIncrementer())
-                .start(stepOne())
-                .next(stepTwo())
+                .start(dbStepOne())
+                .next(dbStepTwo())
                 .build();
     }
 

@@ -16,8 +16,9 @@ public class FlatFileTaskWriter extends FlatFileItemWriter<TaskDto> {
     }
 
     private void fileTaskWriter() {
+
         this.setResource(outputResource);
-        this.setAppendAllowed(true);
+        //this.setAppendAllowed(true);
         final DelimitedLineAggregator<TaskDto> lineAggregator = new DelimitedLineAggregator<TaskDto>() {
             {
                 setDelimiter(",");

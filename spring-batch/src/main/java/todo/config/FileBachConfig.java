@@ -58,8 +58,8 @@ public class FileBachConfig {
     }
 
     @Bean
-    @Qualifier("fileTaskWrite")
-    public FlatFileItemWriter<TaskDto> flatFileWriter() {
+    @Qualifier("fileTaskWriter")
+    public FlatFileItemWriter<TaskDto> fileTaskWriter() {
         return new FlatFileTaskWriter(outputResource);
     }
 
@@ -68,14 +68,14 @@ public class FileBachConfig {
     private ItemReader<TaskDto> fileTaskReader;
 
     @Autowired
-    @Qualifier("fileTaskProcessor")
     private ItemProcessor<TaskDto, TaskDto> fileTaskProcessor;
 
     @Autowired
-    @Qualifier("fileTaskWrite")
+    @Qualifier("fileTaskWriter")
     private ItemWriter<TaskDto> fileTaskWriter;
 
     @Bean
+    @Qualifier("stdFileTaskWrite")
     public FlatFileItemWriter<TaskDto> stdItemWriter() throws Exception {
 
         FlatFileItemWriter<TaskDto> writer = new FlatFileItemWriter<>();
@@ -122,8 +122,8 @@ public class FileBachConfig {
     }
 
     @Bean
-    public Step stepThree() {
-        return stepBuilderFactory.get("stepThree")
+    public Step fileStepOne() {
+        return stepBuilderFactory.get("fileStepOne")
                 // Retrieve data in chunks of 10 items
                 .<TaskDto, TaskDto>chunk(10)
                 .reader(fileTaskReader)
@@ -133,8 +133,8 @@ public class FileBachConfig {
     }
 
     @Bean
-    public Step stepFour() throws Exception {
-        return stepBuilderFactory.get("stepThree")
+    public Step fileStepTwo() throws Exception {
+        return stepBuilderFactory.get("fileStepTwo")
                 // Retrieve data in chunks of 10 items
                 .<TaskDto, TaskDto>chunk(10)
                 .reader(fileTaskReader)
@@ -146,11 +146,11 @@ public class FileBachConfig {
     }
 
     @Bean
-    public Job demo2Job() throws Exception {
-        return jobBuilderFactory.get("demo2Job")
+    public Job fileJob() throws Exception {
+        return jobBuilderFactory.get("fileJob")
                 .incrementer(new RunIdIncrementer())
-                .start(stepThree())
-                .start(stepFour())
+                .start(fileStepOne())
+                .next(fileStepTwo())
                 .build();
     }
 
