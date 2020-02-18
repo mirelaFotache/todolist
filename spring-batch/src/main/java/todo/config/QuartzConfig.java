@@ -45,12 +45,12 @@ public class QuartzConfig {
     public JobDetail jobOneDetail() {
         //Set Job data map
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put("jobName", "demoJobOne");
+        jobDataMap.put("jobName", "quartzJobOne");
         jobDataMap.put("jobLauncher", jobLauncher);
         jobDataMap.put("jobLocator", jobLocator);
 
         return JobBuilder.newJob(CustomQuartzJob.class)
-                .withIdentity("demoJobOne")
+                .withIdentity("quartzJobOne")
                 .setJobData(jobDataMap)
                 .storeDurably()
                 .build();
@@ -60,12 +60,12 @@ public class QuartzConfig {
     public JobDetail jobTwoDetail() {
         //Set Job data map
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put("jobName", "demoJobTwo");
+        jobDataMap.put("jobName", "quartzJobTwo");
         jobDataMap.put("jobLauncher", jobLauncher);
         jobDataMap.put("jobLocator", jobLocator);
 
         return JobBuilder.newJob(CustomQuartzJob.class)
-                .withIdentity("demoJobTwo")
+                .withIdentity("quartzJobTwo")
                 .setJobData(jobDataMap)
                 .storeDurably()
                 .build();
@@ -75,7 +75,7 @@ public class QuartzConfig {
     public Trigger jobOneTrigger() {
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder
                 .simpleSchedule()
-                .withIntervalInHours(24)
+                .withIntervalInSeconds(24)
                 .repeatForever();
 
         return TriggerBuilder
@@ -90,7 +90,7 @@ public class QuartzConfig {
     public Trigger jobTwoTrigger() {
         SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder
                 .simpleSchedule()
-                .withIntervalInHours(24)
+                .withIntervalInSeconds(44)
                 .repeatForever();
 
         return TriggerBuilder
