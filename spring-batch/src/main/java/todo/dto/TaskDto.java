@@ -17,6 +17,14 @@ public class TaskDto {
 
     @NotEmpty
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private String dateCreated;
+
+    @NotEmpty
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private String dateUpdate;
+
+    @NotEmpty
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private String dueDate;
 
     @NotEmpty
@@ -97,5 +105,32 @@ public class TaskDto {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public String getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public String getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(String dateUpdate) {
+        this.dateUpdate = dateUpdate;
+    }
+
+    @Override
+    public String toString() {
+        return "TaskDto{" +
+                "id='" + id + '\'' +
+                ", description='" + description + '\'' +
+                ", dueDate='" + dueDate + '\'' +
+                ", repeatType='" + repeatType + '\'' +
+                ", project=" + project +
+                '}';
     }
 }

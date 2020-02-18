@@ -10,21 +10,27 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import todo.dto.TaskDto;
 import todo.processor.TaskProcessor;
-import todo.reader.TaskReader;
+import todo.reader.DatabaseTaskReader;
 import todo.task.CustomTasklet;
-import todo.writer.TaskWriter;
+import todo.writer.DatabaseTaskWriter;
 
 import javax.sql.DataSource;
 
 @Configuration
 @EnableBatchProcessing
 public class BatchConfig {
+
     @Autowired
     private DataSource dataSource;
+
+    @Autowired
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
@@ -33,8 +39,9 @@ public class BatchConfig {
     private StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    ItemReader<TaskDto> taskDtoItemReader() {
-        return new TaskReader(dataSource);
+    @Qualifier("databaseTaskReader")
+    ItemReader<TaskDto> databaseTaskReader() {
+        return new DatabaseTaskReader(dataSource);
     }
 
     @Bean
@@ -43,19 +50,22 @@ public class BatchConfig {
     }
 
     @Bean
-    ItemWriter<TaskDto> taskDtoItemWriter() {
-        return new TaskWriter();
+    ItemWriter<TaskDto> databaseTaskWriter() {
+        return new DatabaseTaskWriter(dataSource, jdbcTemplate);
     }
 
     @Bean
-    public Step stepOne(ItemReader<TaskDto> reader,
-                        ItemProcessor<TaskDto, TaskDto> processor,
-                        ItemWriter<TaskDto> writer) {
+    NamedParameterJdbcTemplate jdbcTemplate(DataSource dataSource) {
+        return new NamedParameterJdbcTemplate(dataSource);
+    }
+
+    @Bean
+    public Step stepOne() {
         return stepBuilderFactory.get("stepOne")
                 .<TaskDto, TaskDto>chunk(10) // Retrieve data in chunks of 10 items
-                .reader(reader)
-                .processor(processor)
-                .writer(writer)
+                .reader(databaseTaskReader())
+                .processor(taskDtoItemProcessor())
+                .writer(databaseTaskWriter())
                 .build();
     }
 
@@ -68,7 +78,7 @@ public class BatchConfig {
     public Job demoJob() {
         return jobBuilderFactory.get("demoJob")
                 .incrementer(new RunIdIncrementer())
-                .start(stepOne(new TaskReader(dataSource), new TaskProcessor(), new TaskWriter()))
+                .start(stepOne())
                 .next(stepTwo())
                 .build();
     }

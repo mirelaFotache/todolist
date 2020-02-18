@@ -2,10 +2,13 @@ server:
   port: 8084
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: spring-batch
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=springbatch
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=todolist
+    driverClassName: org.postgresql.Driver
     username: postgres
     password: admin
     jpa:
