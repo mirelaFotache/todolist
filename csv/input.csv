@@ -1,3 +1,5 @@
-description,dueDate,repeatType
-task5,2020-02-14,weekly
-task6,2020-02-15,monthly
+dateCreated,description,dueDate,repeatType
+2020-02-12,task5,2020-02-14,weekly
+2020-02-13,task6,2020-02-15,monthly
+2020-02-14,task7,2020-02-14,weekly
+2020-02-15,task8,2020-02-15,monthly

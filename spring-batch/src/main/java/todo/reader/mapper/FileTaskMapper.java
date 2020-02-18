@@ -10,8 +10,9 @@ public class FileTaskMapper implements FieldSetMapper<TaskDto> {
     @Override
     public TaskDto mapFieldSet(FieldSet fieldSet) throws BindException {
         TaskDto task = new TaskDto();
+        task.setDateCreated(fieldSet.readString("dateCreated"));
         task.setDescription(fieldSet.readString("description"));
-        task.setDueDate(fieldSet.readString("dueDate").toString());
+        task.setDueDate(fieldSet.readString("dueDate"));
         task.setRepeatType(fieldSet.readString("repeatType"));
         return task;
     }

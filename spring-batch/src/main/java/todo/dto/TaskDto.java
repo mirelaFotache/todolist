@@ -127,6 +127,7 @@ public class TaskDto {
     public String toString() {
         return "TaskDto{" +
                 "id='" + id + '\'' +
+                ", dateCreated='" + dateCreated + '\'' +
                 ", description='" + description + '\'' +
                 ", dueDate='" + dueDate + '\'' +
                 ", repeatType='" + repeatType + '\'' +

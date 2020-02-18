@@ -24,7 +24,7 @@ public class FlatFileTaskWriter extends FlatFileItemWriter<TaskDto> {
                 setFieldExtractor(new BeanWrapperFieldExtractor<TaskDto>() {
                     {
                         //OBS: Names must correspond to the ones from dto class
-                        setNames(new String[]{"description", "dueDate", "repeatType"});
+                        setNames(new String[]{"dateCreated","description", "dueDate", "repeatType"});
                     }
                 });
             }

@@ -20,7 +20,7 @@ public class FlatFileTaskReader extends FlatFileItemReader<TaskDto> {
             {
                 setLineTokenizer(new DelimitedLineTokenizer() {
                     {
-                        setNames("description", "dueDate", "repeatType");
+                        setNames("dateCreated","description", "dueDate", "repeatType");
                     }
                 });
                 setFieldSetMapper(new FileTaskMapper());
