@@ -19,6 +19,10 @@ import todo.processor.TaskProcessor;
 import todo.reader.DatabaseTaskReader;
 import todo.task.MyTaskOne;
 import todo.writer.DatabaseTaskWriter;
+import todo.writer.DatabaseWriterSettings;
+import todo.writer.QueryConstants;
+import todo.writer.setter.InsertTaskPreparedStatementSetter;
+import todo.writer.setter.TaskPreparedStatementSetter;
 
 import javax.sql.DataSource;
 
@@ -53,10 +57,30 @@ public class DatabaseBatchConfig {
         return new TaskProcessor();
     }
 
+    //Update description and due_date from tasks
     @Bean
     @Qualifier("databaseTaskWriter")
     ItemWriter<TaskDto> databaseTaskWriter() {
-        return new DatabaseTaskWriter(dataSource, jdbcTemplate);
+        DatabaseWriterSettings dw = new DatabaseWriterSettings();
+        dw.setDataSource(dataSource);
+        dw.setJdbcTemplate(jdbcTemplate);
+        dw.setQuery(QueryConstants.QUERY_UPDATE_TASK);
+        dw.setItemPreparedStatementSetter(new TaskPreparedStatementSetter());
+
+        return new DatabaseTaskWriter(dw);
+    }
+
+    //Insert tasks into task table
+    @Bean
+    @Qualifier("insertToDbTaskWriter")
+    ItemWriter<TaskDto> insertToDbTaskWriter() {
+        DatabaseWriterSettings dw = new DatabaseWriterSettings();
+        dw.setDataSource(dataSource);
+        dw.setJdbcTemplate(jdbcTemplate);
+        dw.setQuery(QueryConstants.QUERY_INSERT_TASK);
+        dw.setItemPreparedStatementSetter(new InsertTaskPreparedStatementSetter());
+
+        return new DatabaseTaskWriter(dw);
     }
 
     @Autowired
@@ -64,8 +88,12 @@ public class DatabaseBatchConfig {
     private ItemWriter<TaskDto> databaseTaskWriter;
 
     @Autowired
+    @Qualifier("insertToDbTaskWriter")
+    private ItemWriter<TaskDto> insertToDbTaskWriter;
+
+    @Autowired
     @Qualifier("databaseTaskProcessor")
-    private ItemProcessor<TaskDto,TaskDto> databaseTaskProcessor;
+    private ItemProcessor<TaskDto, TaskDto> databaseTaskProcessor;
 
     @Bean
     NamedParameterJdbcTemplate jdbcTemplate(DataSource dataSource) {

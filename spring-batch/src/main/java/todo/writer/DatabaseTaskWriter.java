@@ -1,34 +1,20 @@
 package todo.writer;
 
-import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import todo.dto.TaskDto;
-import todo.writer.setter.TaskPreparedStatementSetter;
-
-import javax.sql.DataSource;
 
 public class DatabaseTaskWriter extends JdbcBatchItemWriter<TaskDto> {
 
-    private DataSource dataSource;
-    private NamedParameterJdbcTemplate jdbcTemplate;
-    private static final String QUERY_INSERT_TASK = "update task set description=?, due_date=? where id=? ";
+    private DatabaseWriterSettings databaseWriterSettings;
 
-    public DatabaseTaskWriter(DataSource dataSource, NamedParameterJdbcTemplate jdbcTemplate) {
-        this.dataSource = dataSource;
-        this.jdbcTemplate = jdbcTemplate;
-
-        databaseItemWriter(dataSource, jdbcTemplate);
+    public DatabaseTaskWriter(DatabaseWriterSettings dw) {
+        databaseItemWriter(dw);
     }
 
-    void databaseItemWriter(DataSource dataSource, NamedParameterJdbcTemplate jdbcTemplate) {
-        this.setDataSource(dataSource);
-        this.setJdbcTemplate(jdbcTemplate);
-        this.setSql(QUERY_INSERT_TASK);
-
-        ItemPreparedStatementSetter<TaskDto> valueSetter =
-                new TaskPreparedStatementSetter();
-        this.setItemPreparedStatementSetter(valueSetter);
-
+    void databaseItemWriter(DatabaseWriterSettings dw) {
+        this.setDataSource(dw.getDataSource());
+        this.setJdbcTemplate(dw.getJdbcTemplate());
+        this.setSql(dw.getQuery());
+        this.setItemPreparedStatementSetter(dw.getItemPreparedStatementSetter());
     }
 }
