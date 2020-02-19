@@ -20,9 +20,9 @@ import todo.reader.DatabaseTaskReader;
 import todo.task.MyTaskOne;
 import todo.writer.DatabaseTaskWriter;
 import todo.writer.DatabaseWriterSettings;
-import todo.writer.QueryConstants;
+import todo.QueryConstants;
 import todo.writer.setter.InsertTaskPreparedStatementSetter;
-import todo.writer.setter.TaskPreparedStatementSetter;
+import todo.writer.setter.UpdateTaskPreparedStatementSetter;
 
 import javax.sql.DataSource;
 
@@ -48,7 +48,7 @@ public class DatabaseBatchConfig {
     @Bean
     @Qualifier("databaseTaskReader")
     ItemReader<TaskDto> databaseTaskReader() {
-        return new DatabaseTaskReader(dataSource);
+        return new DatabaseTaskReader(dataSource, QueryConstants.QUERY_FIND_TASKS_BY_DATE);
     }
 
     @Bean
@@ -65,7 +65,7 @@ public class DatabaseBatchConfig {
         dw.setDataSource(dataSource);
         dw.setJdbcTemplate(jdbcTemplate);
         dw.setQuery(QueryConstants.QUERY_UPDATE_TASK);
-        dw.setItemPreparedStatementSetter(new TaskPreparedStatementSetter());
+        dw.setItemPreparedStatementSetter(new UpdateTaskPreparedStatementSetter());
 
         return new DatabaseTaskWriter(dw);
     }

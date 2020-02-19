@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class TaskPreparedStatementSetter implements ItemPreparedStatementSetter<TaskDto> {
+public class UpdateTaskPreparedStatementSetter implements ItemPreparedStatementSetter<TaskDto> {
     @Override
     public void setValues(TaskDto item, PreparedStatement ps) throws SQLException {
 
