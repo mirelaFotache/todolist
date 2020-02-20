@@ -1,5 +1,7 @@
 package todo.dto;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.List;
@@ -9,28 +11,20 @@ public class ProjectDto {
     private String id;
 
     @NotEmpty
-    @Size(max=50)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String dateCreated;
+
+    private Boolean deleted;
+
+    @NotEmpty
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String dateUpdate;
+
+    @NotEmpty
+    @Size(max = 50)
     private String label;
 
     private List<TaskDto> tasks;
-
-/*    private List<UserDto> users;*/
-
-    public ProjectDto() {
-        //Empty constructor
-    }
-
-/*    public ProjectDto(String id, String label, List<TaskDto> tasks,List<UserDto> users) {
-        this.id = id;
-        this.label = label;
-        this.tasks = tasks;
-        this.users = users;
-    }*/
-    public ProjectDto(String id, String label, List<TaskDto> tasks) {
-        this.id = id;
-        this.label = label;
-        this.tasks = tasks;
-    }
 
     public String getLabel() {
         return label;
@@ -56,11 +50,27 @@ public class ProjectDto {
         this.tasks = tasks;
     }
 
-/*    public List<UserDto> getUsers() {
-        return users;
+    public String getDateCreated() {
+        return dateCreated;
     }
 
-    public void setUsers(List<UserDto> users) {
-        this.users = users;
-    }*/
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public String getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(String dateUpdate) {
+        this.dateUpdate = dateUpdate;
+    }
 }

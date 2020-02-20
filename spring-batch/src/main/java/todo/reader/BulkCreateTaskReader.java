@@ -1,6 +1,7 @@
 package todo.reader;
 
 import org.springframework.batch.item.ItemReader;
+import todo.dto.ProjectDto;
 import todo.dto.TaskDto;
 import todo.dto.TaskItemsDto;
 
@@ -24,11 +25,18 @@ public class BulkCreateTaskReader implements ItemReader<TaskDto> {
     private void initialize() {
         AtomicInteger counter = new AtomicInteger(1);
         Stream.iterate(0, n -> n + 1)
-                .limit(1)
+                .limit(3)
                 .forEach(x -> {
                     Date date = Calendar.getInstance().getTime();
                     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String strDate = dateFormat.format(date);
+
+                    ProjectDto project = new ProjectDto();
+                    project.setId(UUID.randomUUID().toString());
+                    project.setDateCreated(strDate);
+                    project.setDeleted(false);
+                    project.setDateUpdate(strDate);
+                    project.setLabel("Project "+counter);
 
                     // Create task
                     TaskDto task = new TaskDto();
@@ -43,6 +51,7 @@ public class BulkCreateTaskReader implements ItemReader<TaskDto> {
                     } else {
                         task.setRepeatType("WEEKLY");
                     }
+                    task.setProject(project);
 
                     // Create first task item
                     TaskItemsDto item = new TaskItemsDto();
@@ -66,7 +75,7 @@ public class BulkCreateTaskReader implements ItemReader<TaskDto> {
                     item2.setDeleted(false);
                     item2.setDateUpdate(strDate);
                     item2.setCompleted(true);
-                    item2.setLabel("Item 2");
+                    item2.setLabel("Item "+counter+1);
                     //item2.setTaskId(task.getId());
 
                     if(task.getTaskItems()==null) {

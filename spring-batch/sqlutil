@@ -1,0 +1,15 @@
+ WITH insProject AS (
+   INSERT INTO project (id, date_created, deleted, date_update, label)
+     VALUES (?, ?, ?, ?, ?)
+     ON CONFLICT DO NOTHING
+     RETURNING id AS project_id ),
+
+  insTask AS (
+   INSERT INTO task (id, date_created, deleted, date_update, description, due_date, repeat_type, project_id)
+     VALUES (?, ?, ?, ?, ?, ?, ?, (SELECT project_id FROM insProject ))
+     ON CONFLICT DO NOTHING
+     RETURNING id AS task_id )
+
+   INSERT INTO task_items (id, date_created, deleted, date_update, completed, label, task_id)
+     VALUES (unnest(?), unnest(?), unnest(?), unnest(?), unnest(?), unnest(?), (SELECT task_id FROM insTask))
+     ON CONFLICT DO NOTHING

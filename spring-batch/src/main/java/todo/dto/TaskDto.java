@@ -9,19 +9,22 @@ import java.util.List;
 
 public class TaskDto {
 
-    private String id;
-
     @NotEmpty
-    @Size(max = 50)
-    private String description;
+    private String id;
 
     @NotEmpty
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String dateCreated;
 
+    private Boolean deleted;
+
     @NotEmpty
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String dateUpdate;
+
+    @NotEmpty
+    @Size(max = 50)
+    private String description;
 
     @NotEmpty
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -36,7 +39,7 @@ public class TaskDto {
 
     private List<TaskItemsDto> taskItems;
 
-    private Boolean deleted;
+
 
     public TaskDto() {
         //Empty constructor
