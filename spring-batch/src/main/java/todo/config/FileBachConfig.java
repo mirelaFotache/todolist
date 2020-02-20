@@ -121,6 +121,7 @@ public class FileBachConfig {
         return compositeItemWriter;
     }
 
+    // Write the output to output.csv
     @Bean
     public Step fileStepOne() {
         return stepBuilderFactory.get("fileStepOne")
@@ -132,6 +133,7 @@ public class FileBachConfig {
                 .build();
     }
 
+    // Split the output into two files: output-std and output-xml
     @Bean
     public Step fileStepTwo() throws Exception {
         return stepBuilderFactory.get("fileStepTwo")

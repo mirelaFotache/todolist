@@ -1,5 +1,7 @@
 package todo.dto;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -10,13 +12,23 @@ public class TaskItemsDto {
     private UUID id;
 
     @NotEmpty
-    @Size(max = 50)
-    private String label;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String dateCreated;
+
+    private Boolean deleted;
+
+    @NotEmpty
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String dateUpdate;
 
     private Boolean completed;
 
+    @NotEmpty
+    @Size(max = 50)
+    private String label;
+
     @NotNull
-    private TaskDto task;
+    private String taskId;
 
     public UUID getId() {
         return id;
@@ -42,11 +54,35 @@ public class TaskItemsDto {
         this.completed = completed;
     }
 
-    public TaskDto getTask() {
-        return task;
+    public String getTaskId() {
+        return taskId;
     }
 
-    public void setTask(TaskDto task) {
-        this.task = task;
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public String getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public String getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(String dateUpdate) {
+        this.dateUpdate = dateUpdate;
     }
 }

@@ -14,13 +14,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import todo.QueryConstants;
 import todo.dto.TaskDto;
 import todo.processor.TaskProcessor;
+import todo.reader.BulkCreateTaskReader;
 import todo.reader.DatabaseTaskReader;
 import todo.task.MyTaskOne;
 import todo.writer.DatabaseTaskWriter;
 import todo.writer.DatabaseWriterSettings;
-import todo.QueryConstants;
 import todo.writer.setter.InsertTaskPreparedStatementSetter;
 import todo.writer.setter.UpdateTaskPreparedStatementSetter;
 
@@ -50,6 +51,16 @@ public class DatabaseBatchConfig {
     ItemReader<TaskDto> databaseTaskReader() {
         return new DatabaseTaskReader(dataSource, QueryConstants.QUERY_FIND_TASKS_BY_DATE);
     }
+
+    @Bean
+    @Qualifier("bulkCreateTaskReader")
+    ItemReader<TaskDto> bulkCreateTaskReader() {
+        return new BulkCreateTaskReader();
+    }
+
+    @Autowired
+    @Qualifier("bulkCreateTaskReader")
+    private ItemReader<TaskDto> bulkCreateTaskReader;
 
     @Bean
     @Qualifier("databaseTaskProcessor")
@@ -116,11 +127,22 @@ public class DatabaseBatchConfig {
     }
 
     @Bean
+    public Step dbStepThree() {
+        return stepBuilderFactory.get("dbStepThree")
+                .<TaskDto, TaskDto>chunk(10) // Retrieve data in chunks of 10 items
+                .reader(bulkCreateTaskReader)
+                .processor(databaseTaskProcessor)
+                .writer(insertToDbTaskWriter)
+                .build();
+    }
+
+    @Bean
     public Job databaseJob() {
         return jobBuilderFactory.get("databaseJob")
                 .incrementer(new RunIdIncrementer())
                 .start(dbStepOne())
                 .next(dbStepTwo())
+                .next(dbStepThree())
                 .build();
     }
 

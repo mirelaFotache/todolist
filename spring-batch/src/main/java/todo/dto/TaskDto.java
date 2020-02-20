@@ -16,15 +16,15 @@ public class TaskDto {
     private String description;
 
     @NotEmpty
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String dateCreated;
 
     @NotEmpty
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String dateUpdate;
 
     @NotEmpty
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String dueDate;
 
     @NotEmpty

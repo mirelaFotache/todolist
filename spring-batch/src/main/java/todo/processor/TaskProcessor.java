@@ -1,7 +1,5 @@
 package todo.processor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import todo.dto.TaskDto;
 
@@ -11,21 +9,33 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class TaskProcessor implements ItemProcessor<TaskDto, TaskDto> {
-    private static Logger log = LoggerFactory.getLogger(TaskProcessor.class);
+    //private static Logger log = LoggerFactory.getLogger(TaskProcessor.class);
     private static int counter = 1;
 
     @Override
-    public TaskDto process(TaskDto item) throws Exception {
+    public TaskDto process(TaskDto item) {
 
+        String today = getDayOfToday();
+
+        item.setDateCreated(today);
+        item.setDateUpdate(today);
+        item.setDueDate(today);
+        item.setDescription("task " + counter + " Updated at: " + today);
+        if (item.getTaskItems() != null) {
+            item.getTaskItems().get(0).setDateCreated(today);
+            item.getTaskItems().get(0).setDateUpdate(today);
+        }
+
+        //log.info("Processed item: " + item);
+        counter++;
+
+        return item;
+    }
+
+    private String getDayOfToday() {
         String pattern = "yyyy-MM-dd HH:mm:ss";
         DateFormat df = new SimpleDateFormat(pattern);
         Date today = Calendar.getInstance().getTime();
-        String todayAsString = df.format(today);
-
-        item.setDueDate(todayAsString);
-        item.setDescription("task "+counter+" Updated at: " + todayAsString);
-        counter++;
-        log.info("Processed item: "+item);
-        return item;
+        return df.format(today);
     }
 }
