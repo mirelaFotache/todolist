@@ -193,11 +193,11 @@ public class TaskServiceImpl implements TaskService {
                 .forEach(x -> {
                     String strDate = getCurrentDate();
 
-                    //Create project
+                    // Create project
                     ProjectDto project = new ProjectDto();
                     project.setDeleted(false);
                     project.setLabel("Project " + counter);
-                    //Persist project
+                    // Persist project
                     final Project persistedProject = projectRepository.save(ProjectAdapter.fromDto(project));
 
                     // Create task
@@ -212,7 +212,7 @@ public class TaskServiceImpl implements TaskService {
                     }
                     final Task taskEntity = TaskAdapter.fromDto(task);
                     taskEntity.setProject(persistedProject);
-                    //Persist task
+                    // Persist task
                     final Task persistedTask = taskRepository.save(taskEntity);
 
                     // Create first task item
@@ -220,7 +220,7 @@ public class TaskServiceImpl implements TaskService {
                     firstItem.setDeleted(false);
                     firstItem.setCompleted(true);
                     firstItem.setLabel("Item " + itemCounter.getAndIncrement());
-                    // Create second task item`
+                    // Create second task item
                     TaskItemsDto SecondItem = new TaskItemsDto();
                     SecondItem.setDeleted(false);
                     SecondItem.setCompleted(true);
@@ -230,24 +230,24 @@ public class TaskServiceImpl implements TaskService {
                     firstItemEntity.setTask(persistedTask);
                     final TaskItems secondItemEntity = TaskItemsAdapter.fromDto(SecondItem);
                     secondItemEntity.setTask(persistedTask);
-                    //Persist items
+                    // Persist items
                     taskItemsRepository.saveAll(Arrays.asList(firstItemEntity, secondItemEntity));
 
-                    if (counter.get() % batchSize == 0) { //10000, same as the JDBC batch size
-                        //flush a batch of inserts and release memory:
+                    if (counter.get() % batchSize == 0) { // same as the JDBC batch size
+                        // flush a batch of inserts and release memory
                         log.info("Counter: " + counter.get());
 
                         session.flush();
                         session.clear();
                         try {
                             session.getTransaction().commit();
-                            //commit() closes the transaction, so open a new one to be available for the application
-                            //otherwise an error will be thrown that to transaction is active
+                            // commit() closes the transaction, so open a new one to be available for the application
+                            // otherwise an error will be thrown that no transaction is active
                             if (session.getTransaction()!=null && session.getTransaction().getStatus() != TransactionStatus.ACTIVE) {
                                 session.beginTransaction();
                             }
                         }catch(Exception e){
-                            //empty }
+                            // empty
                         }
                     }
                     counter.getAndIncrement();
