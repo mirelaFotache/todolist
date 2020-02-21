@@ -187,27 +187,23 @@ public class TaskServiceImpl implements TaskService {
 
         Session session = (Session) entityManager.getDelegate();
         session.setHibernateFlushMode(FlushMode.COMMIT);
-        log.info(String.valueOf(batchSize));
 
         Stream.iterate(0, n -> n + 1)
                 .limit(10)
                 .forEach(x -> {
-                    if (session.getTransaction()!=null && session.getTransaction().getStatus() != TransactionStatus.ACTIVE) {
-                        session.beginTransaction();
-                    }
                     String strDate = getCurrentDate();
 
                     //Create project
                     ProjectDto project = new ProjectDto();
                     project.setDeleted(false);
-                    project.setLabel("ProjectBB" + counter);
+                    project.setLabel("Project " + counter);
                     //Persist project
                     final Project persistedProject = projectRepository.save(ProjectAdapter.fromDto(project));
 
                     // Create task
                     TaskDto task = new TaskDto();
                     task.setDeleted(false);
-                    task.setDescription("TaskBB" + counter);
+                    task.setDescription("Task " + counter);
                     task.setDueDate(strDate);
                     if (counter.intValue() % 2 == 0) {
                         task.setRepeatType("DAILY");
@@ -223,12 +219,12 @@ public class TaskServiceImpl implements TaskService {
                     TaskItemsDto firstItem = new TaskItemsDto();
                     firstItem.setDeleted(false);
                     firstItem.setCompleted(true);
-                    firstItem.setLabel("ItemBB" + itemCounter.getAndIncrement());
+                    firstItem.setLabel("Item " + itemCounter.getAndIncrement());
                     // Create second task item`
                     TaskItemsDto SecondItem = new TaskItemsDto();
                     SecondItem.setDeleted(false);
                     SecondItem.setCompleted(true);
-                    SecondItem.setLabel("ItemBB" + itemCounter.getAndIncrement());
+                    SecondItem.setLabel("Item " + itemCounter.getAndIncrement());
 
                     final TaskItems firstItemEntity = TaskItemsAdapter.fromDto(firstItem);
                     firstItemEntity.setTask(persistedTask);
@@ -245,6 +241,11 @@ public class TaskServiceImpl implements TaskService {
                         session.clear();
                         try {
                             session.getTransaction().commit();
+                            //commit() closes the transaction, so open a new one to be available for the application
+                            //otherwise an error will be thrown that to transaction is active
+                            if (session.getTransaction()!=null && session.getTransaction().getStatus() != TransactionStatus.ACTIVE) {
+                                session.beginTransaction();
+                            }
                         }catch(Exception e){
                             //empty }
                         }
