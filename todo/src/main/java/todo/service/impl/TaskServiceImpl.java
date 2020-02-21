@@ -57,8 +57,8 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     EntityManager entityManager;
 
-    @Value("jpa.properties.hibernate.jdbc.batch_size")
-    private String batchSize;
+    @Value("${spring.jpa.properties.hibernate.jdbc.batch_size}")
+    private int batchSize;
 
     @Override
     public Page<TaskDto> getTaskByName(String name) {
@@ -187,12 +187,12 @@ public class TaskServiceImpl implements TaskService {
 
         Session session = (Session) entityManager.getDelegate();
         session.setHibernateFlushMode(FlushMode.COMMIT);
-        log.info(batchSize);
+        log.info(String.valueOf(batchSize));
 
         Stream.iterate(0, n -> n + 1)
                 .limit(10)
                 .forEach(x -> {
-                    if (session.getTransaction().getStatus() != TransactionStatus.ACTIVE) {
+                    if (session.getTransaction()!=null && session.getTransaction().getStatus() != TransactionStatus.ACTIVE) {
                         session.beginTransaction();
                     }
                     String strDate = getCurrentDate();
@@ -237,7 +237,7 @@ public class TaskServiceImpl implements TaskService {
                     //Persist items
                     taskItemsRepository.saveAll(Arrays.asList(firstItemEntity, secondItemEntity));
 
-                    if (counter.get() % 20 == 0) { //10000, same as the JDBC batch size
+                    if (counter.get() % batchSize == 0) { //10000, same as the JDBC batch size
                         //flush a batch of inserts and release memory:
                         log.info("Counter: " + counter.get());
 

@@ -43,4 +43,4 @@ NOTE:
    https://github.com/mirelaFotache/todolist
 
 
-   OBS:
+   OBS: toDDo mocroservice contains an example of BATCH INSERT in TaskServiceImpl. Method is called batchInsert() !!!
