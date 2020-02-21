@@ -11,6 +11,7 @@ public class BaseEntityListener {
     @PrePersist
     public void onPrePersist(BaseModel baseModel) {
         baseModel.setCreatedDate(new Date());
+        baseModel.setUpdateDate(new Date());
     }
 
     @PreUpdate

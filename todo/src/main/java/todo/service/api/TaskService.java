@@ -19,4 +19,5 @@ public interface TaskService {
 
     public void deleteTask(String id);
 
+    public void batchInsert();
 }

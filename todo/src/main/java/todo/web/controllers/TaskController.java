@@ -43,5 +43,11 @@ public class TaskController {
         taskService.deleteTask(id);
         return ResponseEntity.noContent().build();
     }
+    @PutMapping(value = "/batch_insert")
+    public ResponseEntity<Object> batchInsert() {
+        taskService.batchInsert();
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

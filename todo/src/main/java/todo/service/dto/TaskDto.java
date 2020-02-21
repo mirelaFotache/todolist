@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskDto {
@@ -16,7 +17,7 @@ public class TaskDto {
     private String description;
 
     @NotEmpty
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String dueDate;
 
     @NotEmpty
@@ -26,7 +27,7 @@ public class TaskDto {
     @NotNull
     private ProjectDto project;
 
-    private List<TaskItemsDto> taskItems;
+    private List<TaskItemsDto> taskItems = new ArrayList<>();
 
     private Boolean deleted;
 

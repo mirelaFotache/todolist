@@ -1,6 +1,5 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=todolist
+    url: jdbc:postgresql://localhost:5432/postgres?currentSchema=todolist&reWriteBatchedInserts=true
     username: postgres
     password: admin
-

@@ -9,4 +9,4 @@ spring:
       password: s3cr3t
   profiles:
     active: @spring.profiles.active@
-      include: todo, user
+      #include: todo, user

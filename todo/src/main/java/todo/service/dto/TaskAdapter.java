@@ -51,6 +51,7 @@ public class TaskAdapter {
             task.setProject(ProjectAdapter.fromDto(dto.getProject()));
             if (dto.getDeleted() != null)
                 task.setDeleted(dto.getDeleted());
+            task.setTaskItems(TaskItemsAdapter.fromDtoList(dto.getTaskItems()));
         }
         return task;
     }

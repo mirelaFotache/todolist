@@ -17,4 +17,6 @@ public interface TaskItemsService {
     public Optional<TaskItemsDto> updateTaskItems(String id, TaskItemsDto taskItemsDto);
 
     public void deleteTaskItems(String id);
+
+    public void batchInsert();
 }

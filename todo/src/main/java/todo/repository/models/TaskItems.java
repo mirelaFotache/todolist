@@ -10,7 +10,7 @@ public class TaskItems extends BaseModel {
 
     private Boolean completed;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Task.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Task.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "task_id", foreignKey = @ForeignKey(name = "fk_task_task_items"))
     private Task task;
 

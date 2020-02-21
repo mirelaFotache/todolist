@@ -2,6 +2,7 @@ package todo.service.dto;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectDto {
@@ -12,7 +13,9 @@ public class ProjectDto {
     @Size(max=50)
     private String label;
 
-    private List<TaskDto> tasks;
+    private Boolean deleted;
+
+    private List<TaskDto> tasks = new ArrayList<>();
 
 /*    private List<UserDto> users;*/
 
@@ -63,4 +66,12 @@ public class ProjectDto {
     public void setUsers(List<UserDto> users) {
         this.users = users;
     }*/
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 }

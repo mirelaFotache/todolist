@@ -1,8 +1,10 @@
 package todo.repository.models;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -11,11 +13,8 @@ public class Project extends BaseModel {
 
     private String label;
 
-    @OneToMany(mappedBy = "project")
-    private List<Task> tasks;
-
-/*    @ManyToMany(mappedBy = "projects")
-    private Set<User> users;*/
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private List<Task> tasks = new ArrayList<>();
 
     public String getLabel() {
         return label;
@@ -33,11 +32,4 @@ public class Project extends BaseModel {
         this.tasks = tasks;
     }
 
-/*    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }*/
 }

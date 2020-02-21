@@ -1,5 +1,7 @@
 package todo.repository.models;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -12,16 +14,17 @@ public class Task extends BaseModel {
 
     @Column(name = "due_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @Type(type = "timestamp")
     private Date dueDate;
 
     @Column(name = "repeat_type")
     private String repeatType;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Project.class)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Project.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "project_id", foreignKey = @ForeignKey(name = "fk_task_project"))
     private Project project;
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<TaskItems> taskItems;
 
     public String getDescription() {

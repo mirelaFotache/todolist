@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 public interface TaskItemsRepository extends CrudRepository<TaskItems, UUID> {
+
     @Query("select task from TaskItems task where task.label=:name")
     Collection<TaskItems> getTasksItemsByName(@Param("name") String name);
 }

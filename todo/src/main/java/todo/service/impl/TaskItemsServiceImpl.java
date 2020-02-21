@@ -6,22 +6,21 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import todo.exceptions.InvalidParameterException;
 import todo.repository.TaskItemsRepository;
 import todo.repository.TaskRepository;
 import todo.repository.models.Task;
 import todo.repository.models.TaskItems;
 import todo.service.api.TaskItemsService;
-import todo.service.dto.TaskDto;
-import todo.service.dto.TaskItemsAdapter;
-import todo.service.dto.TaskItemsDto;
-import todo.exceptions.InvalidParameterException;
+import todo.service.dto.*;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Component
@@ -121,6 +120,59 @@ public class TaskItemsServiceImpl implements TaskItemsService {
             msg = TASKITEMSDTO_NOTEMPTY_TASKITEMSID;
         return msg;
     }
+    public void batchInsert() {
 
+        List<TaskDto> taskData = new ArrayList<>();
+
+        AtomicInteger counter = new AtomicInteger(1);
+        AtomicInteger itemCounter = new AtomicInteger(1);
+        Stream.iterate(0, n -> n + 1)
+                .limit(3)
+                .forEach(x -> {
+                    Date date = Calendar.getInstance().getTime();
+                    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String strDate = dateFormat.format(date);
+
+                    ProjectDto project = new ProjectDto();
+                    project.setDeleted(false);
+                    project.setLabel("ProjectBB" + counter);
+
+                    // Create task
+                    TaskDto task = new TaskDto();
+                    task.setDeleted(false);
+                    task.setDescription("TaskBB" + counter);
+                    task.setDueDate(strDate);
+                    if (counter.intValue() % 2 == 0) {
+                        task.setRepeatType("DAILY");
+                    } else {
+                        task.setRepeatType("WEEKLY");
+                    }
+                    project.getTasks().add(task);
+
+                    // Create first task item
+                    TaskItemsDto item = new TaskItemsDto();
+                    item.setDeleted(false);
+                    item.setCompleted(true);
+                    item.setLabel("ItemBB" + itemCounter.getAndIncrement());
+                    task.getTaskItems().add(item);
+
+                    // Create second task item
+                    TaskItemsDto item2 = new TaskItemsDto();
+                    item2.setDeleted(false);
+                    item2.setCompleted(true);
+                    item2.setLabel("ItemBB" + itemCounter.getAndIncrement());
+                    task.getTaskItems().add(item2);
+
+                    taskData.add(task);
+                    counter.getAndIncrement();
+                });
+
+        taskData.forEach(taskDto->{
+            final Task task = TaskAdapter.fromDto(taskDto);
+
+            taskItemsRepository.saveAll(task.getTaskItems());
+
+        });
+    }
 
 }

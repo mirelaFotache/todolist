@@ -12,7 +12,7 @@ public class TaskItemsDto {
     @NotEmpty
     @Size(max = 50)
     private String label;
-
+    private Boolean deleted;
     private Boolean completed;
 
     @NotNull
@@ -48,5 +48,13 @@ public class TaskItemsDto {
 
     public void setTask(TaskDto task) {
         this.task = task;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

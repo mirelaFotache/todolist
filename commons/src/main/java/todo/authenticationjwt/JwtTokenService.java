@@ -1,10 +1,9 @@
 package todo.authenticationjwt;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import todo.exceptions.ToDoListException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -13,9 +12,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import todo.exceptions.ToDoListException;
 
-import java.io.*;
-import java.net.URL;
+import java.io.File;
+import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.security.PublicKey;
 import java.security.cert.Certificate;
@@ -100,7 +100,6 @@ public class JwtTokenService {
             ClassLoader classLoader = JwtTokenService.class.getClassLoader();
 
             File file = new File(new File("").getAbsolutePath(),nameAndPath);
-            log.info(">>>>>>>>>>>>>>> file absolute path: <<< "+file.getAbsolutePath());
 
             if (file.canRead()) {
                 KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
