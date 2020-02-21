@@ -21,10 +21,6 @@ public class TaskProcessor implements ItemProcessor<TaskDto, TaskDto> {
         item.setDateUpdate(today);
         item.setDueDate(today);
         item.setDescription("task " + counter + " Updated at: " + today);
-        if (item.getTaskItems() != null) {
-            item.getTaskItems().get(0).setDateCreated(today);
-            item.getTaskItems().get(0).setDateUpdate(today);
-        }
 
         //log.info("Processed item: " + item);
         counter++;

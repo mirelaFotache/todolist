@@ -36,7 +36,7 @@ public class BulkCreateTaskReader implements ItemReader<TaskDto> {
                     project.setDateCreated(strDate);
                     project.setDeleted(false);
                     project.setDateUpdate(strDate);
-                    project.setLabel("Project "+counter);
+                    project.setLabel("ProjectAA"+counter);
 
                     // Create task
                     TaskDto task = new TaskDto();
@@ -61,7 +61,6 @@ public class BulkCreateTaskReader implements ItemReader<TaskDto> {
                     item.setDateUpdate(strDate);
                     item.setCompleted(true);
                     item.setLabel("Item "+counter);
-                    //item.setTaskId(task.getId());
 
                     if(task.getTaskItems()==null) {
                         task.setTaskItems(new ArrayList<>());
@@ -75,8 +74,8 @@ public class BulkCreateTaskReader implements ItemReader<TaskDto> {
                     item2.setDeleted(false);
                     item2.setDateUpdate(strDate);
                     item2.setCompleted(true);
-                    item2.setLabel("Item "+counter+1);
-                    //item2.setTaskId(task.getId());
+                    int index = counter.get()+1;
+                    item2.setLabel("Item "+index);
 
                     if(task.getTaskItems()==null) {
                         task.setTaskItems(new ArrayList<>());
@@ -90,8 +89,6 @@ public class BulkCreateTaskReader implements ItemReader<TaskDto> {
 
     @Override
     public TaskDto read() {
-        //log.info("Start reading next item...");
-
         if (counter < taskData.size()) {
             TaskDto task = taskData.get(counter);
             counter++;

@@ -6,10 +6,7 @@ import org.springframework.batch.item.database.ItemPreparedStatementSetter;
 import todo.dto.ProjectDto;
 import todo.dto.TaskDto;
 
-import java.sql.Array;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
@@ -32,7 +29,7 @@ public class InsertTaskPreparedStatementSetter implements ItemPreparedStatementS
 
         // Date created
         try {
-            ps.setDate(2, new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(project.getDateCreated()).getTime()));
+            ps.setTimestamp(2, new java.sql.Timestamp(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(project.getDateCreated()).getTime()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -42,7 +39,7 @@ public class InsertTaskPreparedStatementSetter implements ItemPreparedStatementS
 
         // Date update
         try {
-            ps.setDate(4, new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(project.getDateUpdate()).getTime()));
+            ps.setTimestamp(4, new java.sql.Timestamp(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(project.getDateUpdate()).getTime()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -57,7 +54,7 @@ public class InsertTaskPreparedStatementSetter implements ItemPreparedStatementS
 
         // Date created
         try {
-            ps.setDate(7, new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(task.getDateCreated()).getTime()));
+            ps.setTimestamp(7, new java.sql.Timestamp(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(task.getDateCreated()).getTime()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -67,7 +64,7 @@ public class InsertTaskPreparedStatementSetter implements ItemPreparedStatementS
 
         // Date update
         try {
-            ps.setDate(9, new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(task.getDateUpdate()).getTime()));
+            ps.setTimestamp(9, new java.sql.Timestamp(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(task.getDateUpdate()).getTime()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -77,7 +74,7 @@ public class InsertTaskPreparedStatementSetter implements ItemPreparedStatementS
 
         // Due date
         try {
-            ps.setDate(11, new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(task.getDueDate()).getTime()));
+            ps.setTimestamp(11, new java.sql.Timestamp(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(task.getDueDate()).getTime()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -89,9 +86,9 @@ public class InsertTaskPreparedStatementSetter implements ItemPreparedStatementS
         //TASK ITEM
         final int size = task.getTaskItems().size();
         UUID[] ids = new UUID[size];
-        Date[] dateCreatedList = new Date[size];
+        Timestamp[] dateCreatedList = new Timestamp[size];
         Boolean[] deletedList = new Boolean[size];
-        Date[] dateUpdatedList = new Date[size];
+        Timestamp[] dateUpdatedList = new Timestamp[size];
         Boolean[] completedList = new Boolean[size];
         String[] labels = new String[size];
 
@@ -99,9 +96,9 @@ public class InsertTaskPreparedStatementSetter implements ItemPreparedStatementS
         task.getTaskItems().forEach(taskItem -> {
             try {
                 ids[index.get()] = UUID.randomUUID();
-                dateCreatedList[index.get()] = new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(taskItem.getDateCreated()).getTime());
+                dateCreatedList[index.get()] = new java.sql.Timestamp(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(taskItem.getDateCreated()).getTime());
                 deletedList[index.get()] = taskItem.getDeleted();
-                dateUpdatedList[index.get()] = new java.sql.Date(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(taskItem.getDateUpdate()).getTime());
+                dateUpdatedList[index.get()] = new java.sql.Timestamp(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(taskItem.getDateUpdate()).getTime());
                 completedList[index.get()] = taskItem.getCompleted();
                 labels[index.get()] = taskItem.getLabel();
             } catch (Exception e) {
