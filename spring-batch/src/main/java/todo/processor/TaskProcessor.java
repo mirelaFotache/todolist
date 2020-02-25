@@ -9,8 +9,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class TaskProcessor implements ItemProcessor<TaskDto, TaskDto> {
-    //private static Logger log = LoggerFactory.getLogger(TaskProcessor.class);
-    private static int counter = 1;
 
     @Override
     public TaskDto process(TaskDto item) {
@@ -20,10 +18,12 @@ public class TaskProcessor implements ItemProcessor<TaskDto, TaskDto> {
         item.setDateCreated(today);
         item.setDateUpdate(today);
         item.setDueDate(today);
-        item.setDescription("task " + counter + " Updated at: " + today);
-
-        //log.info("Processed item: " + item);
-        counter++;
+        final int limit = item.getDescription().indexOf("Updated");
+        if (limit > 0) {
+            item.setDescription(item.getDescription().substring(0, limit) + " Updated at: " + today);
+        } else {
+            item.setDescription(item.getDescription() + " Updated at: " + today);
+        }
 
         return item;
     }

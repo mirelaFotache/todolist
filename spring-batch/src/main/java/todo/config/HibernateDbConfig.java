@@ -1,12 +1,9 @@
 package todo.config;
 
 import org.hibernate.SessionFactory;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -118,7 +115,7 @@ public class HibernateDbConfig {
     @Qualifier("databaseEntityTaskWriter")
     private ItemWriter<Task> databaseEntityTaskWriter;
 
-    @Bean
+/*    @Bean
     public Step dbStepFour() {
         return stepBuilderFactory.get("dbStepFour")
                 .<Task, Task>chunk(10) // Retrieve data in chunks of 10 items
@@ -134,5 +131,5 @@ public class HibernateDbConfig {
                 .incrementer(new RunIdIncrementer())
                 .start(dbStepFour())
                 .build();
-    }
+    }*/
 }
