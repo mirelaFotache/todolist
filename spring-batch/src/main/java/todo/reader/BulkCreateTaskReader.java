@@ -25,7 +25,7 @@ public class BulkCreateTaskReader implements ItemReader<TaskDto> {
     private void initialize() {
         AtomicInteger counter = new AtomicInteger(1);
         Stream.iterate(0, n -> n + 1)
-                .limit(3)
+                .limit(2)
                 .forEach(x -> {
                     Date date = Calendar.getInstance().getTime();
                     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

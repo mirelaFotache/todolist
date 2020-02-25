@@ -4,7 +4,8 @@ public interface QueryConstants {
 
     String QUERY_UPDATE_TASK = "UPDATE task SET description=?, due_date=? WHERE id=? ";
 
-    String QUERY_FIND_TASKS_BY_DATE = "SELECT * FROM task WHERE due_date > '2020-02-13' limit 5";
+    String QUERY_FIND_TASKS_BY_DATE = "SELECT * FROM task WHERE due_date >= '2020-02-25' limit 2";
+    String QUERY_FIND_TASKS_BY_DATE_HB = "FROM todo.models.Task t WHERE t.dueDate >= :currentDate";
 
     String QUERY_INSERT_TASK = " WITH insProject AS (\n" +
             "   INSERT INTO project (id, date_created, deleted, date_update, label)\n" +

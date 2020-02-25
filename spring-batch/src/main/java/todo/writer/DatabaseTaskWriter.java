@@ -5,8 +5,6 @@ import todo.dto.TaskDto;
 
 public class DatabaseTaskWriter extends JdbcBatchItemWriter<TaskDto> {
 
-    private DatabaseWriterSettings databaseWriterSettings;
-
     public DatabaseTaskWriter(DatabaseWriterSettings dw) {
         databaseItemWriter(dw);
     }

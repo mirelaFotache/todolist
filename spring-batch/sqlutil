@@ -13,3 +13,45 @@
    INSERT INTO task_items (id, date_created, deleted, date_update, completed, label, task_id)
      VALUES (unnest(?), unnest(?), unnest(?), unnest(?), unnest(?), unnest(?), (SELECT task_id FROM insTask))
      ON CONFLICT DO NOTHING
+
+
+
+
+
+ WITH insProject AS (
+   INSERT INTO todolist.project (id, date_created, deleted, date_update, "label")
+     VALUES (
+     unnest('{"eab9c50a-7172-40f2-a5f2-9297ba07ac42","4f413939-3c13-4514-8c50-511c31359cc9"}'::UUID[]),
+     unnest('{"2020-02-24 16:07:55.0","2020-02-24 16:07:55.0"}'::TIMESTAMP[]),
+     unnest('{"false","false"}'::BOOLEAN[]),
+     unnest('{"2020-02-24 16:07:55.0","2020-02-24 16:07:55.0"}'::TIMESTAMP[]),
+     unnest('{"Project 1","Project 2"}'::VARCHAR[]))
+     ON CONFLICT DO NOTHING
+     RETURNING id ),
+
+     insTask AS (
+       INSERT INTO todolist.task (id, date_created, deleted, date_update, description, due_date, repeat_type, project_id)
+          VALUES (
+          unnest('{"b61f3b63-4a29-489a-8463-52c17576c03a","d719eed2-14e3-4744-8cf9-a6478cdeb09b"}'::UUID[]),
+          unnest('{"2020-02-24 16:07:57.0","2020-02-24 16:07:57.0"}'::TIMESTAMP[]),
+          unnest('{"false","false"}'::BOOLEAN[]),
+          unnest('{"2020-02-24 16:07:57.0","2020-02-24 16:07:57.0"}'::TIMESTAMP[]),
+          unnest('{"task 19 Updated at: 2020-02-24 16:07:57","task 20 Updated at: 2020-02-24 16:07:57"}'::VARCHAR[]),
+          unnest('{"2020-02-24 16:07:57.0","2020-02-24 16:07:57.0"}'::TIMESTAMP[]),
+          unnest('{"WEEKLY","DAILY"}'::VARCHAR[]),
+          UNNEST(ARRAY(SELECT id FROM insProject)))
+          ON CONFLICT DO NOTHING
+          RETURNING id
+          )
+
+     INSERT INTO todolist.task_items (id, date_created, deleted, date_update, completed, label, task_id)
+          VALUES (
+          unnest('{"c9bdb048-df36-4c71-8d77-763b32f48b8f","8848713d-cde2-40f6-9a3d-61016a939194",
+			"609bc0c2-0ae6-49e8-a503-99ff1abbba9e","0ec1c411-1437-41f2-877c-8232d565645d"}'::UUID[]),
+		  unnest('{"2020-02-24 16:07:55.0","2020-02-24 16:07:55.0","2020-02-24 16:07:55.0","2020-02-24 16:07:55.0"}'::TIMESTAMP[]),
+          unnest('{"false","false","false","false"}'::BOOLEAN[]),
+          unnest('{"2020-02-24 16:07:55.0","2020-02-24 16:07:55.0","2020-02-24 16:07:55.0","2020-02-24 16:07:55.0"}'::TIMESTAMP[]),
+          unnest('{"true","true","true","true"}'::BOOLEAN[]),
+          unnest('{"Item 1","Item 2","Item 2","Item 3"}'::VARCHAR[]),
+          UNNEST(ARRAY(SELECT id FROM insTask)))
+          --ON CONFLICT DO NOTHING
