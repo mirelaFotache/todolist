@@ -49,5 +49,9 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
-
+    @GetMapping(value = "/test_caching")
+    public ResponseEntity<Object> testCaching() {
+        taskService.testCaching();
+        return ResponseEntity.noContent().build();
+    }
 }

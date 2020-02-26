@@ -25,6 +25,8 @@ import todo.service.dto.*;
 import todo.service.dto.enums.RepeatType;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -36,7 +38,6 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Service
-@Transactional
 public class TaskServiceImpl implements TaskService {
 
     public static final String TASKDTO_NOTEMPTY_PROJECTID = "taskdto.notempty.projectid";
@@ -54,8 +55,15 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskItemsRepository taskItemsRepository;
 
-    @Autowired
+    @PersistenceContext
     EntityManager entityManager;
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+    @Autowired
+    private EntityManagerFactory emf;
 
     @Value("${spring.jpa.properties.hibernate.jdbc.batch_size}")
     private int batchSize;
@@ -142,6 +150,7 @@ public class TaskServiceImpl implements TaskService {
      *
      * @param id id
      */
+    @Transactional
     public void deleteTask(String id) {
         if (id != null) {
             Optional<Task> taskOptional = taskRepository.findById(UUID.fromString(id));
@@ -181,6 +190,7 @@ public class TaskServiceImpl implements TaskService {
         return msg;
     }
 
+    @Transactional
     public void batchInsert() {
         AtomicInteger counter = new AtomicInteger(1);
         AtomicInteger itemCounter = new AtomicInteger(1);
@@ -243,10 +253,10 @@ public class TaskServiceImpl implements TaskService {
                             session.getTransaction().commit();
                             // commit() closes the transaction, so open a new one to be available for the application
                             // otherwise an error will be thrown that no transaction is active
-                            if (session.getTransaction()!=null && session.getTransaction().getStatus() != TransactionStatus.ACTIVE) {
+                            if (session.getTransaction() != null && session.getTransaction().getStatus() != TransactionStatus.ACTIVE) {
                                 session.beginTransaction();
                             }
-                        }catch(Exception e){
+                        } catch (Exception e) {
                             // empty
                         }
                     }
@@ -258,5 +268,48 @@ public class TaskServiceImpl implements TaskService {
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return dateFormat.format(date);
+    }
+
+    public void testCaching() {
+        try {
+            // Open the hibernate session
+            Session session = (Session) emf.createEntityManager().getDelegate();
+            session.beginTransaction();
+
+            // Fetch the task entity from database first time
+            Task task = session.load(Task.class, UUID.fromString("f7ce35c4-90ba-4650-bc50-f9e0a695142d"));
+            log.info("Task description: " + task.getDescription());
+
+            // Fetch the task entity again; Fetched from first level cache
+            task = session.load(Task.class, UUID.fromString("f7ce35c4-90ba-4650-bc50-f9e0a695142d"));
+            log.info("Task description: " + task.getDescription());
+
+            // Let's close the session
+            session.getTransaction().commit();
+            session.close();
+
+            // Try to get task in new session
+            Session anotherSession = (Session) emf.createEntityManager().getDelegate();
+            if (anotherSession.isOpen()) {
+                anotherSession.beginTransaction();
+
+                // Here entity is already in second level cache so no database query will be hit
+                task = anotherSession.load(Task.class, UUID.fromString("f7ce35c4-90ba-4650-bc50-f9e0a695142d"));
+                log.info("Task description: " + task.getDescription());
+                anotherSession.getTransaction().commit();
+                anotherSession.close();
+            }
+            try {
+                final EntityManager em = emf.createEntityManager();
+                Session otherSession = (Session) entityManager.getDelegate();
+                setEntityManager(entityManager);
+                log.info("EntityFetchCount: " + otherSession.getSessionFactory().getStatistics().getEntityFetchCount()); //Prints 1
+                log.info("SecondLevelCacheHitCount: " + otherSession.getSessionFactory().getStatistics().getSecondLevelCacheHitCount()); //Prints 1
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
     }
 }
