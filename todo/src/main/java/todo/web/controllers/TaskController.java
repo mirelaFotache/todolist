@@ -54,4 +54,10 @@ public class TaskController {
         taskService.testCaching();
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping(value = "/test_locking")
+    public ResponseEntity<Object> testLocking() {
+        taskService.testLocking();
+        return ResponseEntity.noContent().build();
+    }
 }

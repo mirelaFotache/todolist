@@ -30,6 +30,9 @@ public class Task extends BaseModel {
     @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<TaskItems> taskItems;
 
+    @Version
+    private Integer version;
+
     public String getDescription() {
         return description;
     }
@@ -68,5 +71,13 @@ public class Task extends BaseModel {
 
     public void setTaskItems(List<TaskItems> taskItems) {
         this.taskItems = taskItems;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 }

@@ -312,4 +312,37 @@ public class TaskServiceImpl implements TaskService {
             log.error(e.getMessage());
         }
     }
+
+    @Transactional
+    public void testLocking() {
+            Session session = (Session) entityManager.getDelegate();
+
+            Task entity = new Task();
+            entity.setId(UUID.randomUUID());
+            entity.setDescription("Test locking");
+
+            session.persist(entity);
+            session.flush();
+            session.detach(entity);
+            log.info("0. ID: " + entity.getId());
+            log.info("1. Version after insert: " + entity.getVersion());
+
+            final Optional<Task> taskOpt = taskRepository.findById(entity.getId());
+            if (taskOpt.isPresent()) {
+                Task task = taskOpt.get();
+                log.info("2. Version after select: " + task.getVersion());
+                task.setDescription("Different name");
+
+                session.persist(task);
+                entity.setVersion(task.getVersion());
+                session.flush();
+                log.info("3. Version after update: " + task.getVersion());
+            }
+
+            entity.setDescription("new name");
+            log.info("4. Version before merge: " + entity.getVersion());
+
+            entity = (Task) session.merge(entity);
+            session.persist(entity);
+    }
 }

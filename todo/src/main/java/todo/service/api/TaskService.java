@@ -22,4 +22,6 @@ public interface TaskService {
     public void batchInsert();
 
     public void testCaching();
+
+    public void testLocking();
 }
