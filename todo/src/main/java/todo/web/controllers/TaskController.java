@@ -67,4 +67,9 @@ public class TaskController {
         taskService.testLocking();
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping(value = "/test_refresh_prop")
+    public ResponseEntity<String> testRefreshProperties() {
+        return ResponseEntity.ok(taskService.testRefreshProperties());
+    }
 }

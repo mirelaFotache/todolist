@@ -27,4 +27,6 @@ public interface TaskService {
     public void testCaching();
 
     public void testLocking();
+
+    public String testRefreshProperties();
 }

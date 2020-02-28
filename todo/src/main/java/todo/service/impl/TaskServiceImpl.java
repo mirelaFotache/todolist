@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+@RefreshScope
 @Service
 public class TaskServiceImpl implements TaskService {
 
@@ -67,6 +69,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Value("${spring.jpa.properties.hibernate.jdbc.batch_size}")
     private int batchSize;
+
+    @Value("${todo.test}")
+    private String todoTest;
 
     @Override
     public Page<TaskDto> getTaskByName(String name) {
@@ -348,5 +353,10 @@ public class TaskServiceImpl implements TaskService {
 
             entity = (Task) session.merge(entity);
             session.persist(entity);
+    }
+
+    public String testRefreshProperties(){
+        log.info(todoTest);
+        return todoTest;
     }
 }

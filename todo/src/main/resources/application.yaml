@@ -35,7 +35,5 @@ spring:
         order_inserts: true
         order_updates: true
         generate_statistics: true
-
 server:
   port: 8085
-
