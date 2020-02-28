@@ -29,6 +29,11 @@ public class TaskAdapter {
             projectDto.setLabel(task.getProject().getLabel());
             dto.setProject(projectDto);
             dto.setDeleted(task.getDeleted());
+            List<TaskItemsDto> items = new ArrayList<>();
+            if(!task.getTaskItems().isEmpty()){
+                items = TaskItemsAdapter.toDtoList(task.getTaskItems());
+                dto.setTaskItems(items);
+            }
         }
         return dto;
     }

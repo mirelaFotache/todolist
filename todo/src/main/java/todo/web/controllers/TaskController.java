@@ -7,6 +7,7 @@ import todo.service.api.TaskService;
 import todo.service.dto.TaskDto;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/tasks")
@@ -21,6 +22,12 @@ public class TaskController {
     @GetMapping(value = "/{name}")
     public ResponseEntity<Page<TaskDto>> getTaskByName(@PathVariable("name") String name) {
         return ResponseEntity.ok(taskService.getTaskByName(name));
+    }
+
+
+    @GetMapping(value = "/id/{id}")
+    public ResponseEntity<TaskDto> getTaskById(@PathVariable("id") UUID id) {
+        return ResponseEntity.ok(taskService.getTaskById(id));
     }
 
     @GetMapping

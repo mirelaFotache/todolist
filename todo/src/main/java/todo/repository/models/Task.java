@@ -7,9 +7,8 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Entity
-@org.hibernate.annotations.Cache(usage =
-        CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="task")
 public class Task extends BaseModel {
 
@@ -23,10 +22,12 @@ public class Task extends BaseModel {
     @Column(name = "repeat_type")
     private String repeatType;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Project.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @ManyToOne(targetEntity = Project.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "project_id", foreignKey = @ForeignKey(name = "fk_task_project"))
     private Project project;
 
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<TaskItems> taskItems;
 

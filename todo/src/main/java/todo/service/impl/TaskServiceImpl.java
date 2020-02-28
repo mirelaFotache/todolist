@@ -78,6 +78,10 @@ public class TaskServiceImpl implements TaskService {
         return null;
     }
 
+    public TaskDto getTaskById(UUID id) {
+        return TaskAdapter.toDto(taskRepository.findById(id).get());
+    }
+
     /**
      * @return all taskDto objects from database
      */
@@ -277,11 +281,11 @@ public class TaskServiceImpl implements TaskService {
             session.beginTransaction();
 
             // Fetch the task entity from database first time
-            Task task = session.load(Task.class, UUID.fromString("f7ce35c4-90ba-4650-bc50-f9e0a695142d"));
+            Task task = session.load(Task.class, UUID.fromString("adac4347-c17a-4782-9ae0-93b29a4afb6c"));
             log.info("Task description: " + task.getDescription());
 
             // Fetch the task entity again; Fetched from first level cache
-            task = session.load(Task.class, UUID.fromString("f7ce35c4-90ba-4650-bc50-f9e0a695142d"));
+            task = session.load(Task.class, UUID.fromString("adac4347-c17a-4782-9ae0-93b29a4afb6c"));
             log.info("Task description: " + task.getDescription());
 
             // Let's close the session
@@ -294,7 +298,7 @@ public class TaskServiceImpl implements TaskService {
                 anotherSession.beginTransaction();
 
                 // Here entity is already in second level cache so no database query will be hit
-                task = anotherSession.load(Task.class, UUID.fromString("f7ce35c4-90ba-4650-bc50-f9e0a695142d"));
+                task = anotherSession.load(Task.class, UUID.fromString("adac4347-c17a-4782-9ae0-93b29a4afb6c"));
                 log.info("Task description: " + task.getDescription());
                 anotherSession.getTransaction().commit();
                 anotherSession.close();

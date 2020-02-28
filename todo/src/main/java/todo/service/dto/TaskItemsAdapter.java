@@ -44,4 +44,14 @@ public class TaskItemsAdapter {
         }
         return taskItems;
     }
+    public static List<TaskItemsDto> toDtoList(List<TaskItems> items) {
+        List<TaskItemsDto> dtos = new ArrayList<>();
+        if (items != null && !items.isEmpty()) {
+            items.forEach(t -> {
+                t.setTask(null);
+                dtos.add(TaskItemsAdapter.toDto(t));
+            });
+        }
+        return dtos;
+    }
 }

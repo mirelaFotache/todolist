@@ -5,11 +5,14 @@ import org.springframework.stereotype.Service;
 import todo.service.dto.TaskDto;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public interface TaskService {
 
     public Page<TaskDto> getTaskByName(String name);
+
+    public TaskDto getTaskById(UUID id);
 
     public Page<TaskDto> getAllTasks();
 

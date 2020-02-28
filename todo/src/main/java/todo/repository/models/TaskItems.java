@@ -1,7 +1,10 @@
 package todo.repository.models;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import javax.persistence.*;
 
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Entity
 @Table(name = "task_items")
 public class TaskItems extends BaseModel {
